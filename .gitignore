@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+dist/
+result
+
+# Personal instance files (examples are committed instead)
+config.yaml
+profile.md
+watchlist.yaml
+.env
+*.db
+reports/

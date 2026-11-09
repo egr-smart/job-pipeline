@@ -1,0 +1,58 @@
+# Copy to config.yaml and edit. Relative paths resolve against this file's directory.
+# Rule of thumb: anything the code filters on lives here; anything only the LLM reads
+# lives in profile.md.
+
+home_country: AU              # ISO code; decides which "Remote (REGION)" listings you're eligible for
+
+state_dir: .                  # where jobs.db lives (overridden by $JOBS_STATE_DIR)
+profile: profile.md
+
+location:
+  # Extra region phrases that should count as including your home country,
+  # on top of the built-in vocabulary in job_pipeline/data/regions.yaml.
+  extra_allowed_regions: []
+
+titles:
+  # A title must contain at least one include phrase and no exclude phrase (whole words).
+  include: [platform, infrastructure, infra, sre, site reliability, reliability, devops,
+            backend, back end, cloud, distributed systems, systems engineer, kubernetes]
+  exclude: [sales, marketing, designer, recruiter, intern, account executive, manager,
+            director, android, ios, frontend, front end, solutions engineer, support engineer]
+
+limits:
+  max_age_days: 30            # ignore postings older than this
+  max_jobs_per_run: 150       # hard cap on LLM scoring calls per collect; newest first
+  active_window_days: 30      # a job counts as active if seen in a source this recently
+
+sources:
+  watchlist: watchlist.yaml
+  hn_who_is_hiring: { enabled: true }
+  remotive: { enabled: true, categories: [devops, software-dev] }
+  weworkremotely: { enabled: true, categories: [devops-sysadmin, back-end-programming] }
+
+llm:
+  scoring:
+    backend: openai_compatible
+    base_url: https://openrouter.ai/api/v1     # or http://localhost:11434/v1 for Ollama
+    model: google/gemini-2.5-flash             # any model id your endpoint serves
+    api_key_env: OPENROUTER_API_KEY            # env var holding the key; omit for local
+    batch_size: 1
+  extraction:
+    model: null                                # cheaper model for HN extraction; null = same as scoring
+
+ranking:
+  shortlist_size: 10
+  unclear_list_size: 3
+  weights: { role_fit: 0.5, stack_fit: 0.3, seniority: 0.2 }
+  red_flag_penalty: 1.0
+  resurface: false
+
+notifiers:
+  - type: file
+    dir: reports
+  - type: email
+    smtp_host: smtp.gmail.com
+    smtp_port: 587
+    username_env: SMTP_USER
+    password_env: SMTP_PASSWORD               # for Gmail, an app password
+    to: you@example.com

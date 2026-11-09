@@ -1,0 +1,31 @@
+# Companies to poll directly. Only `name` is required; run `jobs watchlist resolve` to
+# detect each company's ATS (greenhouse / lever / ashby) and board slug. Slugs below were
+# verified in Nov 2026. Whether each company hires from your country is the filter's job.
+#
+# Not on a supported ATS (custom careers sites): Atlassian, Pulumi.
+companies:
+  - {name: Octopus Deploy, ats: greenhouse, slug: octopusdeploy}
+  - {name: Buildkite, ats: greenhouse, slug: buildkite}
+  - {name: GitLab, ats: greenhouse, slug: gitlab}
+  - {name: Canonical, ats: greenhouse, slug: canonical}
+  - {name: Grafana Labs, ats: greenhouse, slug: grafanalabs}
+  - {name: Elastic, ats: greenhouse, slug: elastic}
+  - {name: Tailscale, ats: greenhouse, slug: tailscale}
+  - {name: Teleport, ats: ashby, slug: goteleport}
+  - {name: Temporal, ats: ashby, slug: temporal}
+  - {name: Cockroach Labs, ats: greenhouse, slug: cockroachlabs}
+  - {name: ClickHouse, ats: ashby, slug: clickhouse}
+  - {name: Redpanda, ats: ashby, slug: redpanda-data}
+  - {name: Tiger Data, ats: ashby, slug: tigerdata}
+  - {name: Supabase, ats: ashby, slug: supabase}
+  - {name: PostHog, ats: ashby, slug: posthog}
+  - {name: PlanetScale, ats: greenhouse, slug: planetscale}
+  - {name: Railway, ats: ashby, slug: railway}
+  - {name: Fly.io, ats: lever, slug: fly}
+  - {name: Chainguard, ats: greenhouse, slug: chainguard}
+  - {name: Coder, ats: ashby, slug: coder}
+  - {name: Sourcegraph, ats: greenhouse, slug: sourcegraph91}
+  - {name: Mattermost, ats: greenhouse, slug: mattermost}
+  - {name: Wikimedia Foundation, ats: greenhouse, slug: wikimedia}
+  - {name: Mozilla, ats: greenhouse, slug: mozilla}
+  - {name: DuckDuckGo, ats: ashby, slug: duck-duck-go}

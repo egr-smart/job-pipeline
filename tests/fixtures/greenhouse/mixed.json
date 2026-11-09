@@ -1,0 +1,168 @@
+{
+ "jobs": [
+  {
+   "absolute_url": "https://job-boards.greenhouse.io/gitlab/jobs/8638232002",
+   "data_compliance": [
+    {
+     "type": "gdpr",
+     "requires_consent": false,
+     "requires_processing_consent": false,
+     "requires_retention_consent": false,
+     "retention_period": null,
+     "demographic_data_consent_applies": false
+    }
+   ],
+   "internal_job_id": 6449994002,
+   "location": {
+    "name": "Remote, United States"
+   },
+   "metadata": [
+    {
+     "id": 4595831002,
+     "name": "Quota Coverage Type",
+     "value": "n/a",
+     "value_type": "single_select"
+    }
+   ],
+   "id": 8638232002,
+   "updated_at": "2026-11-06T15:25:07-05:00",
+   "requisition_id": "6682",
+   "title": "AI Transformation Owner, CRO",
+   "pay_input_ranges": [
+    {
+     "min_cents": 13920000,
+     "max_cents": 23520000,
+     "currency_type": "USD",
+     "title": "United States Salary Range",
+     "blurb": ""
+    }
+   ],
+   "company_name": "GitLab",
+   "first_published": "2026-07-22T13:38:40-04:00",
+   "language": "en",
+   "application_deadline": null,
+   "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster.&lt;/p&gt;\n&lt;p&gt;The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values&amp;nbsp;and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. &lt;a href=&quot;https://www.youtube.com/watch?v=OuZIb5zszQI&quot;&gt;Co-create the future with us&lt;/a&gt; as we build technology that transforms how the world develops software.&lt;/p&gt;\n&lt;p&gt;*&lt;em&gt;Fortune 500\u00ae is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 2025 Fortune 500 list, published in June 2025. Fortune and Fortune Media IP Limited are not affiliated with, and d",
+   "departments": [
+    {
+     "id": 4114891002,
+     "name": "Enablement",
+     "child_ids": [],
+     "parent_id": 4011049002
+    }
+   ],
+   "offices": [
+    {
+     "id": 4040904002,
+     "name": "United States of America",
+     "location": null,
+     "child_ids": [
+      4040902002
+     ],
+     "parent_id": 4019551002
+    }
+   ],
+   "ai_disclaimer": null,
+   "include_ai_disclaimer": null,
+   "ai_opt_out_request_url": null
+  },
+  {
+   "absolute_url": "https://job-boards.greenhouse.io/grafanalabs/jobs/6116452004",
+   "data_compliance": [
+    {
+     "type": "gdpr",
+     "requires_consent": false,
+     "requires_processing_consent": false,
+     "requires_retention_consent": false,
+     "retention_period": null,
+     "demographic_data_consent_applies": false
+    }
+   ],
+   "internal_job_id": 5187658004,
+   "location": {
+    "name": "Netherlands (Remote)"
+   },
+   "metadata": null,
+   "id": 6116452004,
+   "updated_at": "2026-08-18T09:56:41-04:00",
+   "requisition_id": "27422",
+   "title": "Commercial Account Executive, Acquisition | Remote | Netherlands",
+   "pay_input_ranges": [],
+   "company_name": "Grafana Labs",
+   "first_published": "2026-07-27T11:34:24-04:00",
+   "language": "en",
+   "application_deadline": null,
+   "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;Grafana Labs is the company behind Grafana Cloud, the fully managed observability platform trusted by more than 10,000 organizations to ensure reliability, resolve incidents faster, and optimize telemetry at scale. Built on open source and open standards and designed for interoperability across any stack, Grafana Cloud brings AI to observability and observability to AI, giving teams (and their agents) unified visibility so they can see, understand, and act on all their disparate data, wherever it lives, and move at the speed of their ambitions. Customers, including Anthropic, Bloomberg, NVIDIA, Microsoft, and Salesforce, rely on Grafana Labs. We are a 100% remote company with team members across 40+ countries, backed by leading investors including Lightspeed Venture Partners, Sequoia Capital, GIC, Coatue, J.P. Morgan, CapitalG, and Lead Edge Capital. Learn more at &lt;u&gt;&lt;span&gt;&lt;a href=&quot;http://grafana.com&quot; target=&quot;_blank&quot;&gt;grafana.com&lt;/a&gt;&lt;/span&gt;&lt;/u&gt; and follow us on &lt;u&gt;&lt;span&gt;&lt;a href=&quot;https://www.linkedin.com/company/grafana-labs/&quot; target=&quot;_blank&quot;&gt;LinkedIn&lt;/a&gt;&lt;/span&gt;&lt;/u&gt; and &lt;u&gt;&lt;span&gt;&lt;a href=&quot;https://twitter.com/grafana&quot; target=&quot;_blank&quot;&gt;X&lt;/a&gt;&lt;/span&gt;&lt;/u&gt;&lt;u&gt;.&lt;/u&gt;&lt;/p&gt;\n&lt;p&gt;We\u2019re scaling fast and staying true to what makes us different: an open-sour",
+   "departments": [
+    {
+     "id": 4044005004,
+     "name": "Sales (EMEA)",
+     "child_ids": [],
+     "parent_id": 4044000004
+    }
+   ],
+   "offices": [
+    {
+     "id": 4087977004,
+     "name": "Netherlands (Remote)",
+     "location": null,
+     "child_ids": [],
+     "parent_id": 4087971004
+    }
+   ],
+   "ai_disclaimer": "<p>We use Greenhouse's AI-powered Talent Match tool to compare your application against our job requirements.</p>",
+   "include_ai_disclaimer": false,
+   "ai_opt_out_request_url": "http://app4.greenhouse.io/ai_opt_out_request/job_post/6116452004/ai_opt_out"
+  },
+  {
+   "absolute_url": "https://job-boards.greenhouse.io/grafanalabs/jobs/6223266004",
+   "data_compliance": [
+    {
+     "type": "gdpr",
+     "requires_consent": false,
+     "requires_processing_consent": false,
+     "requires_retention_consent": false,
+     "retention_period": null,
+     "demographic_data_consent_applies": false
+    }
+   ],
+   "internal_job_id": 5228421004,
+   "location": {
+    "name": "United States (Remote)"
+   },
+   "metadata": null,
+   "id": 6223266004,
+   "updated_at": "2026-11-02T09:06:29-05:00",
+   "requisition_id": "27561",
+   "title": " Enterprise Account Executive, Acquisition | Central | Remote",
+   "pay_input_ranges": [],
+   "company_name": "Grafana Labs",
+   "first_published": "2026-11-02T09:06:29-05:00",
+   "language": "en",
+   "application_deadline": null,
+   "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;Grafana Labs is the company behind Grafana Cloud, the fully managed observability platform trusted by more than 10,000 organizations to ensure reliability, resolve incidents faster, and optimize telemetry at scale. Built on open source and open standards and designed for interoperability across any stack, Grafana Cloud brings AI to observability and observability to AI, giving teams (and their agents) unified visibility so they can see, understand, and act on all their disparate data, wherever it lives, and move at the speed of their ambitions. Customers, including Anthropic, Bloomberg, NVIDIA, Microsoft, and Salesforce, rely on Grafana Labs. We are a 100% remote company with team members across 40+ countries, backed by leading investors including Lightspeed Venture Partners, Sequoia Capital, GIC, Coatue, J.P. Morgan, CapitalG, and Lead Edge Capital. Learn more at &lt;u&gt;&lt;span&gt;&lt;a href=&quot;http://grafana.com&quot; target=&quot;_blank&quot;&gt;grafana.com&lt;/a&gt;&lt;/span&gt;&lt;/u&gt; and follow us on &lt;u&gt;&lt;span&gt;&lt;a href=&quot;https://www.linkedin.com/company/grafana-labs/&quot; target=&quot;_blank&quot;&gt;LinkedIn&lt;/a&gt;&lt;/span&gt;&lt;/u&gt; and &lt;u&gt;&lt;span&gt;&lt;a href=&quot;https://twitter.com/grafana&quot; target=&quot;_blank&quot;&gt;X&lt;/a&gt;&lt;/span&gt;&lt;/u&gt;&lt;u&gt;.&lt;/u&gt;&lt;/p&gt;\n&lt;p&gt;We\u2019re scaling fast and staying true to what makes us different: an open-sour",
+   "departments": [
+    {
+     "id": 4044003004,
+     "name": "Sales (North & South America)",
+     "child_ids": [],
+     "parent_id": 4044000004
+    }
+   ],
+   "offices": [
+    {
+     "id": 4087956004,
+     "name": "USA (Remote)",
+     "location": null,
+     "child_ids": [],
+     "parent_id": 4087966004
+    }
+   ],
+   "ai_disclaimer": "<p>We use Greenhouse's AI-powered Talent Match tool to compare your application against our job requirements.</p>",
+   "include_ai_disclaimer": false,
+   "ai_opt_out_request_url": "http://app4.greenhouse.io/ai_opt_out_request/job_post/6223266004/ai_opt_out"
+  }
+ ],
+ "meta": {
+  "total": 134
+ }
+}

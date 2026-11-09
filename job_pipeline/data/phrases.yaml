@@ -1,0 +1,63 @@
+# Phrase lists for the hard filters. All matching is whole-word and case-insensitive.
+
+# Location string phrases meaning the role isn't remote.
+not_remote: [hybrid, on site, onsite, in office, in person, office based]
+
+# Location string phrases meaning the role is remote (even if a city is also listed).
+remote: [remote, distributed, work from home, wfh, anywhere, home based, worldwide]
+
+# Description phrases that always deny: citizenship or clearance requirements.
+deny_in_description:
+  - security clearance
+  - active clearance
+  - clearance required
+  - ts sci
+  - top secret
+  - secret clearance
+  - us citizen
+  - u.s. citizen
+  - us citizenship
+  - u.s. citizenship
+  - green card holder
+  - itar
+
+# Description phrases suggesting contractor / employer-of-record hiring across countries.
+# For a role whose location names no region, these mean allow.
+international_hiring:
+  - employer of record
+  - eor
+  - deel
+  - oyster hr
+  - remote.com
+  - hire in any country
+  - hire anywhere
+  - work from anywhere
+  - any timezone
+  - any time zone
+
+# Description phrases suggesting the role is restricted to a country, keyed by that country.
+# Applied only when the location names no region, and only for countries other than home_country.
+country_tells:
+  US:
+    - 401k
+    - 401(k)
+    - authorized to work in the united states
+    - authorized to work in the us
+    - authorised to work in the us
+    - eligible to work in the united states
+    - legally authorized to work in the u.s.
+    - must reside in the united states
+    - must be located in the united states
+    - must be based in the us
+    - within the united states
+    - us based
+    - u.s. based
+    - us only
+    - us residents
+    - medical, dental, and vision
+    - medical, dental and vision
+    - pay transparency
+    - colorado
+    - new york city
+    - washington state
+    - california

@@ -1,0 +1,57 @@
+{
+ "jobs": [
+  {
+   "id": "3b5d54ca-741b-45ac-bd3f-31605a0d3541",
+   "title": "AI Platform Engineer",
+   "department": "Business Operations",
+   "team": "Business Operations",
+   "employmentType": "FullTime",
+   "location": "Remote, Global",
+   "shouldDisplayCompensationOnJobPostings": false,
+   "secondaryLocations": [],
+   "publishedAt": "2026-07-31T18:56:39.246+00:00",
+   "isListed": true,
+   "isRemote": null,
+   "workplaceType": null,
+   "address": null,
+   "jobUrl": "https://jobs.ashbyhq.com/supabase/3b5d54ca-741b-45ac-bd3f-31605a0d3541",
+   "applyUrl": "https://jobs.ashbyhq.com/supabase/3b5d54ca-741b-45ac-bd3f-31605a0d3541/application",
+   "descriptionHtml": "<h2>About Supabase</h2><p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.<br /></p><h2>About the Role</h2><p style=\"min-height:1.5em\">We are hiring a <strong>AI Platform Engineer</strong> to build the execution layer for Supabase's internal AI systems.</p><p style=\"min-height:1.5em\">Supabase is building an AI-native internal operating system: a common way of working across the company where AI carries a meaningful share of the operational load rather than sitting alongside it as an assistant. We are standing up a new central team to build those systems, enable the teams, and embed AI operations throughout the organization. You are the engineer on that team.</p><p style=\"min-height:1.5em\">The execution layer is yours. You will build the platform that actually runs agents: an event-triggered queue, a headless model-agnostic runtime, durable state so work survives a restart, a human review gate, atomic rollback, and full logging of every prompt, tool call and decision so any run can be reconstructed. You will build the evaluation layer that makes any of it trustworthy, because an agent that cannot be measured cannot be trusted with anything beyond reading. And you will build the agents themselves, across everything from executive reporting down",
+   "descriptionPlain": "ABOUT SUPABASE\n\nSupabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\n\n\nABOUT THE ROLE\n\nWe are hiring a AI Platform Engineer to build the execution layer for Supabase's internal AI systems.\n\nSupabase is building an AI-native internal operating system: a common way of working across the company where AI carries a meaningful share of the operational load rather than sitting alongside it as an assistant. We are standing up a new central team to build those systems, enable the teams, and embed AI operations throughout the organization. You are the engineer on that team.\n\nThe execution layer is yours. You will build the platform that actually runs agents: an event-triggered queue, a headless model-agnostic runtime, durable state so work survives a restart, a human review gate, atomic rollback, and full logging of every prompt, tool call and decision so any run can be reconstructed. You will build the evaluation layer that makes any of it trustworthy, because an agent that cannot be measured cannot be trusted with anything beyond reading. And you will build the agents themselves, across everything from executive reporting down to a layer of agents that watch the platform and improve it.\n\nThis is a governance-heavy environment by design, and that is the interesting part of the ",
+   "compensation": {
+    "compensationTierSummary": null,
+    "scrapeableCompensationSalarySummary": null,
+    "compensationTiers": [],
+    "summaryComponents": []
+   }
+  },
+  {
+   "id": "d5573afa-636c-4219-832f-386f498243bf",
+   "title": "Customer Solution Architect (AMER)",
+   "department": "Success",
+   "team": "Success",
+   "employmentType": "FullTime",
+   "location": "Remote, AMER",
+   "shouldDisplayCompensationOnJobPostings": false,
+   "secondaryLocations": [],
+   "publishedAt": "2024-11-14T17:58:07.662+00:00",
+   "isListed": true,
+   "isRemote": true,
+   "workplaceType": "Remote",
+   "address": {
+    "postalAddress": {}
+   },
+   "jobUrl": "https://jobs.ashbyhq.com/supabase/d5573afa-636c-4219-832f-386f498243bf",
+   "applyUrl": "https://jobs.ashbyhq.com/supabase/d5573afa-636c-4219-832f-386f498243bf/application",
+   "descriptionHtml": "<p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth. </p><p style=\"min-height:1.5em\">We\u2019re seeking a Customer Solutions Architect (CSA) to help drive the adoption of Supabase across a diverse range of customers: from agile startups building towards their first launch to established brands with highly scaled workloads.</p><p style=\"min-height:1.5em\">At Supabase, CSA\u2019s are responsible for the entire customer journey, working closely with our most valuable users to:</p><ol style=\"min-height:1.5em\"><li><p style=\"min-height:1.5em\">Uncover and understand business and technical requirements.</p></li><li><p style=\"min-height:1.5em\">Design and architect technical solutions built on the Supabase platform.</p></li><li><p style=\"min-height:1.5em\">Work with customers to lead proof-of-value implementations.</p></li><li><p style=\"min-height:1.5em\">Provide regular customer engagements to answer complex questions, unblock adoption, and optimize scaled performance.</p></li></ol><p style=\"min-height:1.5em\">Successful CSAs always put customers first, working closely with them to become trusted advisors who understand their needs, work as an extension of their team toward common success, and advocate on behalf of the customer within Supabase.</p><p style=\"min-heig",
+   "descriptionPlain": "Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth. \n\nWe\u2019re seeking a Customer Solutions Architect (CSA) to help drive the adoption of Supabase across a diverse range of customers: from agile startups building towards their first launch to established brands with highly scaled workloads.\n\nAt Supabase, CSA\u2019s are responsible for the entire customer journey, working closely with our most valuable users to:\n\n 1. Uncover and understand business and technical requirements.\n\n 2. Design and architect technical solutions built on the Supabase platform.\n\n 3. Work with customers to lead proof-of-value implementations.\n\n 4. Provide regular customer engagements to answer complex questions, unblock adoption, and optimize scaled performance.\n\nSuccessful CSAs always put customers first, working closely with them to become trusted advisors who understand their needs, work as an extension of their team toward common success, and advocate on behalf of the customer within Supabase.\n\nYou'll be joining our team to support Supabase Team & Enterprise customers, where you will be expected to lead and innovate around the following areas of responsibility:\n\n\n\n\nDISCOVERY\n\n - Lead technical discovery to uncover business and technical objectives, set appropriate expectations of the Supabase platform",
+   "compensation": {
+    "compensationTierSummary": null,
+    "scrapeableCompensationSalarySummary": null,
+    "compensationTiers": [],
+    "summaryComponents": []
+   }
+  }
+ ],
+ "apiVersion": "1"
+}

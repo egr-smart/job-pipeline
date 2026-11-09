@@ -1,0 +1,140 @@
+"""Instance configuration: config.yaml (what code acts on) + profile.md (what the LLM reads)."""
+
+import os
+from pathlib import Path
+from typing import Literal
+
+import yaml
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+
+
+class _Strict(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class LocationConfig(_Strict):
+    extra_allowed_regions: list[str] = []
+
+
+class TitleConfig(_Strict):
+    include: list[str] = Field(min_length=1)
+    exclude: list[str] = []
+
+
+class Limits(_Strict):
+    max_age_days: int = 30
+    max_jobs_per_run: int = 150
+    active_window_days: int = 30
+
+
+class ToggleSource(_Strict):
+    enabled: bool = True
+
+
+class CategorySource(ToggleSource):
+    categories: list[str] = []
+
+
+class Sources(_Strict):
+    watchlist: str | None = "watchlist.yaml"
+    hn_who_is_hiring: ToggleSource = ToggleSource()
+    remotive: CategorySource = CategorySource()
+    weworkremotely: CategorySource = CategorySource()
+
+
+class LLMBackendConfig(_Strict):
+    backend: Literal["openai_compatible"] = "openai_compatible"
+    base_url: str = "https://openrouter.ai/api/v1"
+    model: str
+    api_key_env: str | None = None
+    batch_size: int = 1
+    timeout_seconds: float = 120
+
+
+class LLMExtractionOverride(_Strict):
+    model: str | None = None
+
+
+class LLMConfig(_Strict):
+    scoring: LLMBackendConfig
+    extraction: LLMExtractionOverride = LLMExtractionOverride()
+
+
+class Weights(_Strict):
+    role_fit: float = 0.5
+    stack_fit: float = 0.3
+    seniority: float = 0.2
+
+
+class Ranking(_Strict):
+    shortlist_size: int = 10
+    unclear_list_size: int = 3
+    weights: Weights = Weights()
+    red_flag_penalty: float = 1.0
+    resurface: bool = False
+
+
+class FileNotifier(_Strict):
+    type: Literal["file"]
+    dir: str = "reports"
+
+
+class EmailNotifier(_Strict):
+    type: Literal["email"]
+    smtp_host: str
+    smtp_port: int = 587
+    username_env: str
+    password_env: str
+    to: str
+    from_: str | None = Field(default=None, alias="from")
+
+
+class Config(_Strict):
+    home_country: str
+    state_dir: str = "."
+    profile: str = "profile.md"
+    location: LocationConfig = LocationConfig()
+    titles: TitleConfig
+    limits: Limits = Limits()
+    sources: Sources = Sources()
+    llm: LLMConfig | None = None
+    ranking: Ranking = Ranking()
+    notifiers: list[FileNotifier | EmailNotifier] = [FileNotifier(type="file")]
+
+    # Directory the config file lives in; relative paths resolve against it.
+    base_dir: Path = Path(".")
+
+    @field_validator("home_country")
+    @classmethod
+    def _upper(cls, v: str) -> str:
+        return v.upper()
+
+    def path(self, p: str) -> Path:
+        return (self.base_dir / p).resolve()
+
+    @property
+    def db_path(self) -> Path:
+        state = os.environ.get("JOBS_STATE_DIR") or self.state_dir
+        return self.path(state) / "jobs.db"
+
+    def read_profile(self) -> str:
+        return self.path(self.profile).read_text()
+
+
+class ConfigError(Exception):
+    pass
+
+
+def default_config_path() -> Path:
+    return Path(os.environ.get("JOBS_CONFIG", "config.yaml"))
+
+
+def load_config(path: Path | None = None) -> Config:
+    path = path or default_config_path()
+    if not path.exists():
+        raise ConfigError(f"config file not found: {path} (copy config.example.yaml to get started)")
+    raw = yaml.safe_load(path.read_text()) or {}
+    try:
+        return Config.model_validate({**raw, "base_dir": path.parent.resolve()})
+    except ValidationError as e:
+        raise ConfigError(f"invalid config {path}:\n{e}") from e
