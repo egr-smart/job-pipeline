@@ -1,31 +1,55 @@
 # Companies to poll directly. Only `name` is required; run `jobs watchlist resolve` to
-# detect each company's ATS (greenhouse / lever / ashby) and board slug. Slugs below were
-# verified in Nov 2026. Whether each company hires from your country is the filter's job.
+# detect each company's ATS (greenhouse / lever / ashby) and board slug.
 #
-# Not on a supported ATS (custom careers sites): Atlassian, Pulumi.
+# Seeded Nov 2026 for: backend/product roles at AI-native companies first, then backend
+# at remote product companies, then platform/infra. Every company below had either
+# AU-eligible postings (APAC / Australia / worldwide) at the time, or remote postings with
+# no region stated. Slugs were verified against each board's own descriptions.
+#
+# Note: `resolve` rewrites this file and drops comments.
+#
+# Considered but left out:
+#  - US/EU-only or on-site at the time: Airbyte, AssemblyAI, Braintrust, Clerk, Close,
+#    Encord, GitBook, Grafana Labs, Inngest, Labelbox, LlamaIndex, Mintlify, n8n, Pinecone,
+#    Prolific, Resend, Sanity, Synthesia, Temporal, Trigger.dev, Vercel, Warp, Weaviate,
+#    Writer, Zed
+#  - Unsupported careers site (needs a custom adapter): Hugging Face (Workable), Canva,
+#    Atlassian, Heidi Health, Leonardo.ai, Employment Hero, harrison.ai, Automattic, Doist
+#  - Slug belongs to a different company: Galileo, Ghost, Fathom, Remote, Neon
 companies:
-  - {name: Octopus Deploy, ats: greenhouse, slug: octopusdeploy}
-  - {name: Buildkite, ats: greenhouse, slug: buildkite}
-  - {name: GitLab, ats: greenhouse, slug: gitlab}
-  - {name: Canonical, ats: greenhouse, slug: canonical}
-  - {name: Grafana Labs, ats: greenhouse, slug: grafanalabs}
-  - {name: Elastic, ats: greenhouse, slug: elastic}
-  - {name: Tailscale, ats: greenhouse, slug: tailscale}
-  - {name: Teleport, ats: ashby, slug: goteleport}
-  - {name: Temporal, ats: ashby, slug: temporal}
-  - {name: Cockroach Labs, ats: greenhouse, slug: cockroachlabs}
-  - {name: ClickHouse, ats: ashby, slug: clickhouse}
-  - {name: Redpanda, ats: ashby, slug: redpanda-data}
-  - {name: Tiger Data, ats: ashby, slug: tigerdata}
+  # --- AI-native products --------------------------------------------------------
+  - {name: ElevenLabs, ats: ashby, slug: elevenlabs}
+  - {name: Zapier, ats: ashby, slug: zapier}
+  - {name: LangChain, ats: ashby, slug: langchain}
+  - {name: HumanSignal, ats: greenhouse, slug: humansignal}            # Label Studio: human-in-the-loop data
+  - {name: Invisible Technologies, ats: greenhouse, slug: invisible}   # human-in-the-loop AI training
+  - {name: Deepgram, ats: ashby, slug: deepgram}
+  - {name: Speechify, ats: greenhouse, slug: speechify}
+  - {name: Arize AI, ats: greenhouse, slug: arizeai}                   # LLM evaluation / observability
+  - {name: Unstructured, ats: ashby, slug: unstructured}
+  - {name: Prefect, ats: ashby, slug: prefect}
+  - {name: Sourcegraph, ats: greenhouse, slug: sourcegraph91}          # Amp coding agent
+  - {name: Lorikeet, ats: ashby, slug: lorikeet}                       # Sydney, AI customer support
+  - {name: Relevance AI, ats: ashby, slug: relevanceai}                # Sydney, AI agents
+  - {name: Airwallex, ats: ashby, slug: airwallex}                     # Melbourne fintech; mostly office-based
+
+  # --- Remote product companies --------------------------------------------------
   - {name: Supabase, ats: ashby, slug: supabase}
   - {name: PostHog, ats: ashby, slug: posthog}
-  - {name: PlanetScale, ats: greenhouse, slug: planetscale}
-  - {name: Railway, ats: ashby, slug: railway}
-  - {name: Fly.io, ats: lever, slug: fly}
-  - {name: Chainguard, ats: greenhouse, slug: chainguard}
-  - {name: Coder, ats: ashby, slug: coder}
-  - {name: Sourcegraph, ats: greenhouse, slug: sourcegraph91}
-  - {name: Mattermost, ats: greenhouse, slug: mattermost}
-  - {name: Wikimedia Foundation, ats: greenhouse, slug: wikimedia}
-  - {name: Mozilla, ats: greenhouse, slug: mozilla}
+  - {name: Linear, ats: ashby, slug: linear}
+  - {name: GitLab, ats: greenhouse, slug: gitlab}
+  - {name: Buffer, ats: ashby, slug: buffer}
   - {name: DuckDuckGo, ats: ashby, slug: duck-duck-go}
+  - {name: Oyster, ats: ashby, slug: oyster}
+  - {name: Wikimedia Foundation, ats: greenhouse, slug: wikimedia}
+  - {name: Octopus Deploy, ats: greenhouse, slug: octopusdeploy}       # Brisbane, .NET
+
+  # --- Platform / infra / data (stretch) -----------------------------------------
+  - {name: ClickHouse, ats: ashby, slug: clickhouse}
+  - {name: Railway, ats: ashby, slug: railway}
+  - {name: Canonical, ats: greenhouse, slug: canonical}
+  - {name: Elastic, ats: greenhouse, slug: elastic}
+  - {name: Teleport, ats: ashby, slug: goteleport}
+  - {name: Buildkite, ats: greenhouse, slug: buildkite}
+  - {name: Fly.io, ats: lever, slug: fly}
+  - {name: Coder, ats: ashby, slug: coder}

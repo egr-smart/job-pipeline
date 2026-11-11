@@ -59,7 +59,7 @@ def classify_location(job: RawJob, home: str, vocab: Vocab) -> Outcome:
     loc = normalize_words(job.location_raw)
 
     if hit := _first(desc, vocab.deny_in_description):
-        return Outcome("deny", f"requires {hit}")
+        return Outcome("deny", f"description says: {hit}")
 
     title = normalize_words(job.title)
     remote = (
