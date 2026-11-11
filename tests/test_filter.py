@@ -31,6 +31,10 @@ VOCAB = Vocab.load(home_country="AU")
         ("Remote - Anywhere in the US", None, "", "", "deny"),
         ("Europe or US", None, "", "", "deny"),
         ("Remote", None, "SRE, Infrastructure Platforms — UK", "", "deny"),
+        ("Remote", None, "Software Engineer, AI Data - Budapest, Hungary", "", "deny"),
+        ("Remote", None, "Software Engineer, AI Data - Kaunas, Lithuania", "", "deny"),
+        ("Remote - Latin America", None, "", "", "deny"),
+        ("Remote, Brisbane, QLD", None, "", "", "allow"),
         # Not remote
         ("Warsaw, Poland - Hybrid", None, "", "", "deny"),
         ("Sydney", "hybrid", "", "", "deny"),

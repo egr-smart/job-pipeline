@@ -256,6 +256,7 @@ class Store:
                    (SELECT mark FROM marks m WHERE m.job_id = j.id) AS mark
             FROM scores s JOIN jobs j ON j.id = s.job_id
             WHERE s.profile_hash = ? AND s.scorer_id = ?
+              AND j.filter_result IN ('allow', 'unknown')  -- a later filter fix can deny a scored job
             """,
             (profile_hash, scorer_id),
         ).fetchall()

@@ -1,7 +1,7 @@
 # Phrase lists for the hard filters. All matching is whole-word and case-insensitive.
 
 # Location string phrases meaning the role isn't remote.
-not_remote: [hybrid, on site, onsite, in office, in person, office based]
+not_remote: [hybrid, on site, onsite, in office, in person, office based, office]
 
 # Location string phrases meaning the role is remote (even if a city is also listed).
 remote: [remote, distributed, work from home, wfh, anywhere, home based, worldwide]
