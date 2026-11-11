@@ -219,6 +219,47 @@ class Store:
                 (outcome.result, outcome.reason, job_id),
             )
 
+    # --- scores -----------------------------------------------------------------------
+
+    def jobs_to_score(self, seen_at: str, profile_hash: str, scorer_id: str, *, resurface: bool) -> list[int]:
+        """Jobs seen in this run that passed the filters and lack a score for this profile+model.
+
+        Newest first. Marked jobs are skipped, and so are already-shown ones unless resurfacing.
+        """
+        rows = self.db.execute(
+            f"""
+            SELECT j.id FROM jobs j
+            WHERE j.filter_result IN ('allow', 'unknown')
+              AND j.last_seen = ?
+              AND NOT EXISTS (SELECT 1 FROM scores s WHERE s.job_id = j.id
+                              AND s.profile_hash = ? AND s.scorer_id = ?)
+              AND NOT EXISTS (SELECT 1 FROM marks m WHERE m.job_id = j.id)
+              {"" if resurface else "AND NOT EXISTS (SELECT 1 FROM shortlist_appearances a WHERE a.job_id = j.id)"}
+            ORDER BY COALESCE(j.posted_at, j.first_seen) DESC, j.id DESC
+            """,
+            (seen_at, profile_hash, scorer_id),
+        ).fetchall()
+        return [r["id"] for r in rows]
+
+    def save_score(self, job_id: int, profile_hash: str, scorer_id: str, result_json: str) -> None:
+        with self.db:
+            self.db.execute(
+                "INSERT OR REPLACE INTO scores VALUES (?, ?, ?, ?, ?)",
+                (job_id, profile_hash, scorer_id, result_json, now_iso()),
+            )
+
+    def scored_jobs(self, profile_hash: str, scorer_id: str) -> list[sqlite3.Row]:
+        """Scores for the current profile+model, with the job's display fields."""
+        return self.db.execute(
+            """
+            SELECT j.id, j.company, j.title, j.location_raw, j.posted_at, j.salary_raw, s.result_json,
+                   (SELECT mark FROM marks m WHERE m.job_id = j.id) AS mark
+            FROM scores s JOIN jobs j ON j.id = s.job_id
+            WHERE s.profile_hash = ? AND s.scorer_id = ?
+            """,
+            (profile_hash, scorer_id),
+        ).fetchall()
+
     # --- runs -------------------------------------------------------------------------
 
     def record_run(self, kind: str, started_at: str, stats: dict) -> int:

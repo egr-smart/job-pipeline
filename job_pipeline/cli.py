@@ -5,7 +5,10 @@ import typer
 
 from .config import ConfigError, load_config
 from .http import Http
+from .llm import make_backend
+from .llm.scoring import ScoreResult, prompt_hash, system_prompt
 from .pipeline import collect as run_collect
+from .rank import drop_reason, rank_score
 from .sources.watchlist import load_watchlist, resolve_company, save_watchlist
 from .store import Store
 
@@ -30,11 +33,12 @@ def _load(config: Path | None):
 def collect(
     config: ConfigOpt = None,
     dry_run: Annotated[bool, typer.Option("--dry-run", help="Fetch and filter only; no LLM calls.")] = False,
+    limit: Annotated[int | None, typer.Option(help="Score at most N jobs this run (newest first).")] = None,
 ):
     """Fetch, dedupe, filter and score new jobs."""
     cfg = _load(config)
     store = Store(cfg.db_path)
-    stats = run_collect(cfg, store, dry_run=dry_run)
+    stats = run_collect(cfg, store, dry_run=dry_run, limit=limit, progress=typer.echo)
 
     failed = [s for s in stats.sources if s["error"]]
     ok = len(stats.sources) - len(failed)
@@ -49,12 +53,61 @@ def collect(
     if stats.deny_reasons:
         top = ", ".join(f"{k} ({v})" for k, v in stats.deny_reasons.most_common(8))
         typer.echo(f"  deny reasons: {top}")
-    msg = f"Would score: {stats.to_score}" if dry_run else f"To score: {stats.to_score}"
+    if dry_run:
+        msg = f"Would score: {stats.to_score}"
+    else:
+        msg = f"Scored: {stats.scored}/{stats.to_score} with {stats.scorer_id}"
+        if stats.cost_usd:
+            msg += f" (≈${stats.cost_usd:.3f} at list price)"
     if stats.deferred:
-        msg += f" (+{stats.deferred} deferred by max_jobs_per_run)"
+        msg += f"; {stats.deferred} more left for later runs"
     typer.echo(msg)
-    if not dry_run:
-        typer.secho("LLM scoring not implemented yet; run with --dry-run.", fg="yellow")
+    if stats.scoring_aborted:
+        typer.secho(f"Scoring stopped: {stats.scoring_aborted}", fg="yellow")
+
+
+@app.command()
+def scores(
+    config: ConfigOpt = None,
+    show_dropped: Annotated[bool, typer.Option("--dropped", help="Also list jobs dropped by ranking.")] = False,
+):
+    """Show scored jobs for the current profile and model, ranked as the digest would."""
+    cfg = _load(config)
+    if cfg.llm is None:
+        typer.secho("No llm configured.", fg="red", err=True)
+        raise typer.Exit(2)
+    store = Store(cfg.db_path)
+    backend = make_backend(cfg.llm.scoring)
+    phash = prompt_hash(system_prompt(cfg.read_profile(), cfg.home_country))
+
+    sections: dict[str, list] = {"Top matches": [], "Worth asking (location unclear)": [], "Dropped": []}
+    for row in store.scored_jobs(phash, backend.id):
+        if row["mark"]:
+            continue
+        result = ScoreResult.model_validate_json(row["result_json"])
+        dropped = drop_reason(result)
+        key = "Dropped" if dropped else (
+            "Top matches" if result.location_eligible == "yes" else "Worth asking (location unclear)"
+        )
+        sections[key].append((rank_score(result, cfg.ranking), row, result, dropped))
+
+    for title, items in sections.items():
+        if title == "Dropped" and not show_dropped:
+            typer.echo(f"\n({len(items)} dropped; show with --dropped)")
+            continue
+        typer.secho(f"\n## {title} ({len(items)})", bold=True)
+        for score, row, r, dropped in sorted(items, key=lambda i: -i[0]):
+            typer.secho(f"\n#{row['id']} {row['company']} — {row['title']}   [score {score}]", bold=True)
+            typer.echo(f"   Location: {row['location_raw']!r} → {r.location_eligible}: {r.location_note}")
+            if r.salary_text or row["salary_raw"]:
+                typer.echo(f"   Salary: {r.salary_text or row['salary_raw']}")
+            typer.echo(f"   Why: {r.summary}")
+            if r.gaps:
+                typer.echo(f"   Gaps: {'; '.join(r.gaps)}")
+            if r.red_flags:
+                typer.echo(f"   Flags: {'; '.join(r.red_flags)}")
+            line = f"   role {r.role_fit} · stack {r.stack_fit} · seniority {r.seniority}"
+            typer.echo(line + (f"   DROPPED: {dropped}" if dropped else ""))
 
 
 @app.command()

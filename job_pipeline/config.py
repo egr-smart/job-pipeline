@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
@@ -42,13 +42,42 @@ class Sources(_Strict):
     weworkremotely: CategorySource = CategorySource()
 
 
-class LLMBackendConfig(_Strict):
-    backend: Literal["openai_compatible"] = "openai_compatible"
+class OpenAICompatibleConfig(_Strict):
+    backend: Literal["openai_compatible"]
     base_url: str = "https://openrouter.ai/api/v1"
     model: str
     api_key_env: str | None = None
     batch_size: int = 1
     timeout_seconds: float = 120
+
+
+# Claude Code in headless mode, using the logged-in subscription. --system-prompt replaces
+# Claude Code's own prompt and --tools "" disables tools, so each call is a plain completion.
+CLAUDE_CLI_COMMAND = [
+    "claude", "-p",
+    "--model", "{model}",
+    "--system-prompt", "{system_prompt}",
+    "--json-schema", "{json_schema}",
+    "--tools", "",
+    "--output-format", "json",
+    "--no-session-persistence",
+]
+
+
+class CliConfig(_Strict):
+    """Any CLI that reads the user prompt on stdin and prints JSON.
+
+    Placeholders in `command`: {model}, {system_prompt}, {json_schema}. Output may be the
+    bare JSON object, or an envelope with `structured_output` or a JSON-string `result`.
+    """
+
+    backend: Literal["cli"]
+    model: str = "sonnet"
+    command: list[str] = CLAUDE_CLI_COMMAND
+    timeout_seconds: float = 180
+
+
+LLMBackendConfig = Annotated[OpenAICompatibleConfig | CliConfig, Field(discriminator="backend")]
 
 
 class LLMExtractionOverride(_Strict):
@@ -68,6 +97,10 @@ class Weights(_Strict):
 
 class Ranking(_Strict):
     shortlist_size: int = 10
+    # Points (0–10) per seniority verdict, scaled by weights.seniority. "under" is always dropped.
+    seniority_scores: dict[Literal["stretch", "match", "over"], float] = {
+        "match": 10.0, "over": 6.0, "stretch": 3.0,
+    }
     unclear_list_size: int = 3
     weights: Weights = Weights()
     red_flag_penalty: float = 1.0

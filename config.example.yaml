@@ -31,12 +31,17 @@ sources:
   weworkremotely: { enabled: true, categories: [devops-sysadmin, back-end-programming] }
 
 llm:
+  # Option A: Claude Code headless, on your Claude subscription (must be logged in to
+  # `claude` on this machine). Good for testing; mind your plan's usage limits.
   scoring:
-    backend: openai_compatible
-    base_url: https://openrouter.ai/api/v1     # or http://localhost:11434/v1 for Ollama
-    model: google/gemini-2.5-flash             # any model id your endpoint serves
-    api_key_env: OPENROUTER_API_KEY            # env var holding the key; omit for local
-    batch_size: 1
+    backend: cli
+    model: sonnet                              # or haiku / opus
+  # Option B (not implemented yet): any OpenAI-compatible endpoint.
+  # scoring:
+  #   backend: openai_compatible
+  #   base_url: https://openrouter.ai/api/v1   # or http://localhost:11434/v1 for Ollama
+  #   model: google/gemini-2.5-flash
+  #   api_key_env: OPENROUTER_API_KEY          # env var holding the key; omit for local
   extraction:
     model: null                                # cheaper model for HN extraction; null = same as scoring
 
@@ -44,6 +49,7 @@ ranking:
   shortlist_size: 10
   unclear_list_size: 3
   weights: { role_fit: 0.5, stack_fit: 0.3, seniority: 0.2 }
+  seniority_scores: { match: 10, over: 6, stretch: 3 }   # "under" is always dropped
   red_flag_penalty: 1.0
   resurface: false
 

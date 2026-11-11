@@ -81,6 +81,7 @@ ranking:
   shortlist_size: 10
   unclear_list_size: 3
   weights: { role_fit: 0.5, stack_fit: 0.3, seniority: 0.2 }
+  seniority_scores: { match: 10, over: 6, stretch: 3 }   # "under" is always dropped
   red_flag_penalty: 1.0
   resurface: false
 
@@ -186,7 +187,7 @@ location_note:      short justification
 salary_text:        verbatim if stated in description, else null
 role_fit:           0–10
 stack_fit:          0–10
-seniority:          under | match | over
+seniority:          under | stretch | match | over   # stretch = credible but above level
 ```
 
 Prompts live in `llm/prompts/{extract,score}.md`.
@@ -195,7 +196,7 @@ Prompts live in `llm/prompts/{extract,score}.md`.
 
 1. Drop `location_eligible == no` and `seniority == under`.
 2. `score = w.role_fit*role_fit + w.stack_fit*stack_fit + w.seniority*seniority_bonus − red_flag_penalty*len(red_flags)`.
-   `seniority_bonus`: match = 10, over = 6 (tunable).
+   `seniority_bonus` from `ranking.seniority_scores`: match = 10, over = 6, stretch = 3 (tunable). Stretch roles stay in the shortlist but rank below comparable matches.
 3. `location_eligible == yes` → **Top matches** (top `shortlist_size`).
    `location_eligible == unclear` → **Worth asking** (top `unclear_list_size`).
 

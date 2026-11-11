@@ -13,6 +13,8 @@ uv sync
 uv run jobs watchlist resolve             # detect each company's ATS + slug
 uv run jobs collect --dry-run             # fetch + filter, no LLM; check volumes
 uv run jobs jobs --result unknown         # inspect what the filter let through, and why
+uv run jobs collect --limit 10            # score the 10 newest passing jobs with the LLM
+uv run jobs scores --dropped              # ranked results with reasoning
 ```
 
 ## Status
@@ -21,7 +23,9 @@ uv run jobs jobs --result unknown         # inspect what the filter let through,
 - [x] Greenhouse / Lever / Ashby watchlist + `watchlist resolve`
 - [x] Hard filters (age, title, three-way location)
 - [ ] HN Who is Hiring, Remotive, We Work Remotely
-- [ ] LLM scoring (OpenAI-compatible: OpenRouter, Ollama, …)
-- [ ] Ranking, digest, email
+- [x] LLM scoring via Claude Code CLI (`backend: cli`) + `jobs scores`
+- [ ] OpenAI-compatible backend (OpenRouter, Ollama, …)
+- [x] Ranking
+- [ ] Digest, email
 - [ ] `jobs eval`, `jobs mark`
 - [ ] Nix flake + NixOS module
