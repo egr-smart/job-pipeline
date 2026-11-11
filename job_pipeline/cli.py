@@ -7,6 +7,7 @@ import typer
 
 from .config import ConfigError, EmailNotifier, FileNotifier, load_config
 from .digest import build_digest
+from .evals import EvalSet, format_report, run_eval
 from .http import Http
 from .llm import make_backend
 from .llm.scoring import prompt_hash, system_prompt
@@ -19,6 +20,8 @@ from .store import Store, now_iso
 app = typer.Typer(no_args_is_help=True, help="Automated remote job search.")
 watchlist_app = typer.Typer(no_args_is_help=True, help="Manage the company watchlist.")
 app.add_typer(watchlist_app, name="watchlist")
+eval_app = typer.Typer(no_args_is_help=True, help="Hand-labelled golden set for checking the scorer.")
+app.add_typer(eval_app, name="eval")
 
 ConfigOpt = Annotated[
     Path | None, typer.Option("--config", "-c", help="Path to config.yaml (default: $JOBS_CONFIG or ./config.yaml)")
@@ -230,3 +233,72 @@ def watchlist_resolve(
             f"or remove: {', '.join(unresolved)}",
             fg="yellow",
         )
+
+
+@eval_app.command("add")
+def eval_add(
+    job_id: int,
+    verdict: Annotated[str, typer.Argument(help="strong | maybe | no: would you want this in your digest?")],
+    location: Annotated[str | None, typer.Option(help="yes | no | unclear: can you be hired from your country?")] = None,
+    note: Annotated[str | None, typer.Option(help="Why; shown next to disagreements.")] = None,
+    config: ConfigOpt = None,
+):
+    """Label a stored job and snapshot it into the golden set."""
+    if verdict not in ("strong", "maybe", "no") or location not in (None, "yes", "no", "unclear"):
+        typer.secho("verdict: strong|maybe|no; --location: yes|no|unclear", fg="red", err=True)
+        raise typer.Exit(2)
+    cfg = _load(config)
+    try:
+        label = EvalSet(cfg.path(cfg.evals_dir)).add(Store(cfg.db_path), job_id, verdict, location, note)
+    except KeyError:
+        typer.secho(f"No job #{job_id}", fg="red", err=True)
+        raise typer.Exit(1)
+    typer.echo(f"#{label.id} {label.company} — {label.title}: {label.verdict}"
+               + (f", location {label.location}" if label.location else ""))
+
+
+@eval_app.command("list")
+def eval_list(config: ConfigOpt = None):
+    """Show the labelled jobs."""
+    cfg = _load(config)
+    labels = EvalSet(cfg.path(cfg.evals_dir)).labels()
+    for l in labels:
+        loc = f" loc={l.location}" if l.location else ""
+        typer.echo(f"#{l.id:<5} {l.verdict:<6}{loc:<13} {l.company} — {l.title[:70]}" + (f"  ({l.note})" if l.note else ""))
+    counts = {v: sum(l.verdict == v for l in labels) for v in ("strong", "maybe", "no")}
+    typer.echo(f"{len(labels)} labelled: " + ", ".join(f"{n} {v}" for v, n in counts.items()))
+
+
+@eval_app.command("run")
+def eval_run(
+    config: ConfigOpt = None,
+    models: Annotated[
+        list[str] | None,
+        typer.Option("--model", "-m", help="Model(s) to evaluate on the configured backend; repeatable. Default: configured model."),
+    ] = None,
+    strong_at: Annotated[float, typer.Option(help="Score at or above which the model counts as 'strong'.")] = 6.0,
+    brief: Annotated[bool, typer.Option("--brief", help="Agreement numbers only.")] = False,
+):
+    """Score the golden set and compare with your labels. Results are cached per model + profile."""
+    cfg = _load(config)
+    if cfg.llm is None:
+        typer.secho("No llm configured.", fg="red", err=True)
+        raise typer.Exit(2)
+    evals = EvalSet(cfg.path(cfg.evals_dir))
+    if not evals.labels():
+        typer.secho("No labels yet. Add some with `jobs eval add <job_id> strong|maybe|no`.", fg="yellow")
+        raise typer.Exit(1)
+    reports = []
+    for model in models or [None]:
+        backend_cfg = cfg.llm.scoring if model is None else cfg.llm.scoring.model_copy(update={"model": model})
+        backend = make_backend(backend_cfg)
+        typer.secho(f"\nEvaluating {backend.id}", bold=True)
+        report = run_eval(cfg, evals, backend, strong_at=strong_at, progress=typer.echo)
+        reports.append(report)
+        typer.echo("\n" + format_report(report, verbose=not brief))
+    if len(reports) > 1:
+        typer.secho("\nSummary", bold=True)
+        for r in sorted(reports, key=lambda r: (-r.verdict_agreement[0], len(r.serious_misses))):
+            a, t = r.verdict_agreement
+            typer.echo(f"  {r.scorer_id:<45} verdict {a}/{t}  serious misses {len(r.serious_misses)}"
+                       + (f"  ≈${r.cost_usd:.3f}" if r.cost_usd else ""))

@@ -73,7 +73,6 @@ llm:
     base_url: https://openrouter.ai/api/v1
     model: <model-id>
     api_key_env: OPENROUTER_API_KEY
-    batch_size: 1
   extraction:                  # optional; defaults to scoring config
     model: <cheaper-model-id>
 
@@ -166,11 +165,11 @@ All phrase lists live in `data/*.yaml`, not code, so they're tunable without cod
 
 | Backend | Status | Covers |
 |---|---|---|
-| `openai_compatible` | **v1 (primary)** | OpenRouter (author's setup), OpenAI, Ollama, LM Studio, vLLM, llama.cpp server |
+| `openai_compatible` | **built** | OpenRouter (author's setup), OpenAI, Ollama, LM Studio, vLLM, llama.cpp server |
 | `anthropic` | later | Native SDK with prompt caching |
-| `cli` | later | Subscription CLIs via a command template (e.g. `claude -p --output-format json`), prompt on stdin. Best for Max-tier subscriptions; Pro limits make it a poor fit for bulk scoring. |
+| `cli` | **built** (used first, for testing on a Claude subscription) | Subscription CLIs via a command template (e.g. `claude -p --output-format json`), prompt on stdin. Best for Max-tier subscriptions; Pro limits make it a poor fit for bulk scoring. |
 
-- One job per call by default; `batch_size` is configurable per backend.
+- One job per call. (Batching several jobs per call was considered; small models handle it poorly and it complicates retries, so it's not implemented.)
 - Output is validated against a pydantic schema; one retry on malformed JSON.
 - Per-call token usage and cost (when the provider returns it) are logged and summed in run health.
 
@@ -242,7 +241,13 @@ LLM: calls (extraction / scoring) · cost · model
 
 ## Evaluation
 
-`evals/` holds 20–30 real job descriptions with hand labels (`strong | maybe | no`, expected `location_eligible`), built from the first few real runs. `jobs eval [--model X]` scores them and prints agreement. Use it to check prompt, weight and model changes, and to pick the cheapest OpenRouter model that agrees with the labels.
+`evals/` (gitignored, personal) holds 20–30 real jobs with hand labels: `strong | maybe | no`, plus optionally the expected `location_eligible`.
+
+- `jobs eval add <job_id> <verdict> [--location ...] [--note ...]` snapshots the stored listing into `evals/jobs/<id>.json` and records the label in `evals/labels.yaml`.
+- `jobs eval run [-m model ...] [--strong-at 6.0] [--brief]` scores every snapshot with each model and maps the result onto the label scale the way the digest would: dropped → `no`, rank ≥ `strong_at` → `strong`, otherwise `maybe`. It reports verdict and location agreement, a confusion matrix, and the disagreements, with "serious misses" (strong↔no) first.
+- Results are cached per (model, prompt+profile hash) in `evals/results/`, so re-runs cost nothing until the profile or prompt changes.
+
+Use it to check prompt, profile, weight and model changes, and to pick the cheapest OpenRouter model that agrees with the labels.
 
 ## CLI
 
@@ -250,7 +255,9 @@ LLM: calls (extraction / scoring) · cost · model
 jobs collect [--dry-run]       # dry-run: fetch + filter only, report counts per source, no LLM
 jobs digest [--no-send]
 jobs run
-jobs eval [--model X]
+jobs eval add <id> strong|maybe|no [--location yes|no|unclear] [--note TEXT]
+jobs eval list
+jobs eval run [-m MODEL ...] [--strong-at 6.0] [--brief]
 jobs mark <id> applied|dismissed [--reason TEXT]
 jobs watchlist resolve
 ```

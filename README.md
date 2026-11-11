@@ -20,6 +20,23 @@ uv run jobs digest                        # real digest: report + email, records
 uv run jobs mark 1998 applied             # never show a job again (applied | dismissed)
 ```
 
+### Checking the scorer: `jobs eval`
+
+Label 20–30 real jobs, then compare any model's judgement with yours:
+
+```sh
+uv run jobs eval add 1998 strong --location yes --note "evals/feedback-loop work"
+uv run jobs eval add 3667 no --location no --note "office 3 days/week"
+uv run jobs eval list
+uv run jobs eval run                                   # the configured model
+uv run jobs eval run -m google/gemini-2.5-flash -m deepseek/deepseek-chat --brief
+```
+
+A model's verdict is `no` if the digest would drop the job, `strong` if it ranks at or above
+`--strong-at` (default 6.0), and `maybe` otherwise. Results are cached per model and
+profile, so re-runs are free until you change `profile.md` or the prompt. `evals/` is
+gitignored: the labels are personal.
+
 ## Status
 
 - [x] Config, SQLite store, cross-source dedupe
@@ -27,8 +44,8 @@ uv run jobs mark 1998 applied             # never show a job again (applied | di
 - [x] Hard filters (age, title, three-way location)
 - [x] HN Who is Hiring, Remotive, We Work Remotely
 - [x] LLM scoring via Claude Code CLI (`backend: cli`) + `jobs scores`
-- [ ] OpenAI-compatible backend (OpenRouter, Ollama, …)
+- [x] OpenAI-compatible backend (OpenRouter, Ollama, …)
 - [x] Ranking
 - [x] Digest (markdown + HTML report), email notifier, `jobs mark`
-- [ ] `jobs eval`
+- [x] `jobs eval` golden set
 - [ ] Nix flake + NixOS module

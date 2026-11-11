@@ -38,12 +38,13 @@ llm:
   scoring:
     backend: cli
     model: sonnet                              # or haiku / opus
-  # Option B (not implemented yet): any OpenAI-compatible endpoint.
+  # Option B: any OpenAI-compatible endpoint (OpenRouter, OpenAI, Ollama, LM Studio, vLLM).
   # scoring:
   #   backend: openai_compatible
   #   base_url: https://openrouter.ai/api/v1   # or http://localhost:11434/v1 for Ollama
-  #   model: google/gemini-2.5-flash
+  #   model: google/gemini-2.5-flash           # pick one with `jobs eval run -m a -m b ...`
   #   api_key_env: OPENROUTER_API_KEY          # env var holding the key; omit for local
+  #   response_format: json_schema             # json_object for models without structured output
   extraction:
     model: null                                # cheaper model for HN extraction; null = same as scoring
 

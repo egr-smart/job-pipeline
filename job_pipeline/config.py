@@ -52,8 +52,10 @@ class OpenAICompatibleConfig(_Strict):
     backend: Literal["openai_compatible"]
     base_url: str = "https://openrouter.ai/api/v1"
     model: str
-    api_key_env: str | None = None
-    batch_size: int = 1
+    api_key_env: str | None = None  # env var holding the key; omit for local servers
+    # json_schema = constrained structured output; json_object for models/servers without it.
+    response_format: Literal["json_schema", "json_object"] = "json_schema"
+    temperature: float = 0.0
     timeout_seconds: float = 120
 
 
@@ -133,6 +135,7 @@ class Config(_Strict):
     home_country: str
     state_dir: str = "."
     profile: str = "profile.md"
+    evals_dir: str = "evals"
     location: LocationConfig = LocationConfig()
     titles: TitleConfig
     limits: Limits = Limits()

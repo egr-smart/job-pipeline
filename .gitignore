@@ -12,3 +12,4 @@ watchlist.yaml
 .env
 *.db
 reports/
+evals/

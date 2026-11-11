@@ -9,7 +9,9 @@ def make_backend(cfg: LLMBackendConfig) -> Backend:
         from .cli import CliBackend
 
         return CliBackend(cfg)
-    raise NotImplementedError(f"LLM backend {cfg.backend!r} is not implemented yet")
+    from .openai_compat import OpenAICompatibleBackend
+
+    return OpenAICompatibleBackend(cfg)
 
 
 __all__ = ["Backend", "LLMError", "make_backend"]
