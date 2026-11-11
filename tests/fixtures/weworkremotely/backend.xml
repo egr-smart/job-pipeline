@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss">
+  <channel>
+    <title>We Work Remotely: Back-End Programming Jobs</title>
+    <link>https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss</link>
+    <description>We Work Remotely: Back-End Programming Jobs</description>
+    <language>en-US</language>
+    <ttl>60</ttl>
+    <item>
+      <media:content url="https://wwr-pro.s3.amazonaws.com/logos/0171/6696/logo.gif" type="image/png"/>
+      <title>Vertican: Senior Applied AI Engineer, Document Intelligence</title>
+      <region>Anywhere in the World</region>
+      <country>🇧🇴 Bolivia (Plurinational State of), 🇧🇷 Brazil, 🇨🇱 Chile, 🇨🇴 Colombia, 🇵🇪 Peru, and 🇺🇾 Uruguay</country>
+      <state>New Jersey</state>
+      <skills>Python, Large Language Models (LLMs), and Agentic AI</skills>
+      <category>Back-End Programming</category>
+      <type>Full-Time</type>
+      <description>&lt;img src="https://we-work-remotely.imgix.net/logos/0171/6696/logo.gif?ixlib=rails-4.0.0&amp;w=50&amp;h=50&amp;dpr=2&amp;fit=fill&amp;auto=compress" /&gt;
+
+&lt;p&gt;
+  &lt;strong&gt;Headquarters:&lt;/strong&gt; New Jersey, USA
+    &lt;br /&gt;&lt;strong&gt;URL:&lt;/strong&gt; &lt;a href="https://vertican.com"&gt;https://vertican.com&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2&gt;About the role&lt;/h2&gt;
+&lt;p&gt;For 40 years Vertican has buildt software that runs law firms. One year ago we created a new modern AI platform for document automation (processing/extraction/redacting) which our customers have been adopting faster than any product we've ever had. Our suite of AI-enabled products save customers thousands of hours each week by processing high volumes of documents with precision and speed.The AI team is growing and we'd like you to join.&lt;/p&gt;
+&lt;p&gt;We are hiring an engineer to own the document processing pipelines end to end: design, benchmarking, experimenting with new architectures and tools, threshold required for deploying a new pipeline, etc.&lt;/p&gt;
+&lt;p&gt;We believe it's important to build our own tooling to help us run, improve, and measure our applications. Therefore, the ideal candidate thinks outside the box on how to not just build the product/pipeline, but also the tooling needed around it.&lt;/p&gt;
+&lt;p&gt;You will be the first dedicated ML hire on the product taking over from the engineering manager who build the current solution and will work directly with the founding engineering team.&lt;/p&gt;
+&lt;p&gt;This is a senior, hands-on individual-contributor role, but we are small team and you'll be involved in design, planning, roadmapping, and architectural decisions.&lt;/p&gt;
+&lt;h2&gt;What you will do&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Design the pipelines.&lt;/strong&gt; Own the architecture of the extraction-to-posting pipelines: page classification, field extraction, candidate retrieval, claim matching, confidence gating and the hand-off to human review, etc. Decide where rules end and models begin, and what each stage must guarantee to the next, what the separation of concerns are, etc.&lt;/p&gt;
+&lt;p&gt;We have different pipelines for different document types and expect that at any given point in time we may have new ones emerge and may consolidate others.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Evaluate new systems before we adopt them.&lt;/strong&gt; Run structured trials of candidate components and recommend what to keep. Examples include probabilistic record linkage (Splink), Azure AI Content Understanding and Document Intelligence, Azure OpenAI and Foundry-hosted models, and LLM agents with tools. Similarly, test new models with the existing pipeline as they are relased from the frontier labs.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Build the evaluation process.&lt;/strong&gt; You'll own the process of evaluating false positives, false negatives, errors of ommission, etc, that we ultimately use to determine if we should upgrade the pipeline.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ship and operate.&lt;/strong&gt; Take components from trial to production in our python workers on the cloud, instrument them, watch cost and quota, and diagnose the cases reviewers send back.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Set direction.&lt;/strong&gt; Work with leadereship on the planing for accuracy, cost improvement, and overall product improvements.&lt;/p&gt;
+&lt;h2&gt;What we are looking for&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Required&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;6+ years building ML or data-intensive systems, at least 3 of them owning a production pipeline whose output people acted on.&lt;/li&gt;
+&lt;li&gt;Solid backend engineering understanding and ideally cloud architecture understanding.&lt;/li&gt;
+&lt;li&gt;Ideally hands-on experience with document understanding: OCR or layout models, field extraction from scanned PDFs, or intelligent document processing products.&lt;/li&gt;
+&lt;li&gt;Experience with entity resolution or record linkage at scale (Splink, Dedupe, Zingg, or your own blocking-and-scoring system) against databases of hundreds of thousands of rows.&lt;/li&gt;
+&lt;li&gt;You have designed an evaluation from scratch: built a labeled ground-truth set, chosen the metrics, and defended a threshold to a non-technical stakeholder.&lt;/li&gt;
+&lt;li&gt;Production experience with LLM APIs, including structured output, tool calling and cost or rate-limit management; you can say when an LLM is the wrong tool.&lt;/li&gt;
+&lt;li&gt;Strong Python and SQL. Comfortable reading Postgres query plans and writing the raw query when the ORM gets in the way.&lt;/li&gt;
+&lt;li&gt;Engineering/Scientist mindset: you are scientific about testing the pipeline and how results are interpeted/presented.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Nice to have&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Azure AI services (Content Understanding, Document Intelligence, Azure OpenAI, Foundry) or the AWS and GCP equivalents.&lt;/li&gt;
+&lt;li&gt;Financial document processing: checks, remittance advices, lockbox files, payment matching, or accounts receivable automation.&lt;/li&gt;
+&lt;li&gt;Exposure to collections, legal operations or other regulated workflows handling PII.&lt;/li&gt;
+&lt;li&gt;Probabilistic matching theory (Fellegi-Sunter) or active-learning labeling workflows.&lt;/li&gt;
+&lt;li&gt;Experience building human-review tooling or feedback loops that feed back into training and evaluation data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;How we work and what we offer&lt;/h2&gt;
+&lt;p&gt;Small team, direct access to large datasets, weekly planning, daily standup, everyone remote in US timezones.&lt;/p&gt;
+&lt;p&gt;What we offer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A small team of tight-knit, like-minded people passionate about high quality software&lt;/li&gt;
+&lt;li&gt;Competitive compensation, commensurate with a senior individual-contributor role.&lt;/li&gt;
+&lt;li&gt;Monthly payments in USD&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Vertican is an equal opportunity employer. We hire on merit and do not discriminate on the basis of race, color, religion, sex, sexual orientation, gender identity, national origin, age, disability or veteran status.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;To apply:&lt;/strong&gt; &lt;a href="https://weworkremotely.com/remote-jobs/vertican-senior-applied-ai-engineer-document-intelligence"&gt;https://weworkremotely.com/remote-jobs/vertican-senior-applied-ai-engineer-document-intelligence&lt;/a&gt;&lt;/p&gt;
+</description>
+      <pubDate>Thu, 05 Nov 2026 17:12:27 +0000</pubDate>
+      <expires_at>Sat, 05 Dec 2026 17:12:27 +0000</expires_at>
+      <guid>https://weworkremotely.com/remote-jobs/vertican-senior-applied-ai-engineer-document-intelligence</guid>
+      <link>https://weworkremotely.com/remote-jobs/vertican-senior-applied-ai-engineer-document-intelligence</link>
+    </item><item>
+      <title>Smartsheet: Principal Software Engineer (Remote Eligible in Bulgaria)</title>
+      <region>Anywhere in the World</region>
+      <country></country>
+      <state></state>
+      <skills></skills>
+      <category>Back-End Programming</category>
+      <type>Full-Time</type>
+      <description>
+
+&lt;p&gt;
+  &lt;strong&gt;Headquarters:&lt;/strong&gt; -REMOTE, BULGARIA-
+&lt;/p&gt;
+
+&lt;div class="content-intro"&gt;&lt;p&gt;For over 20 years, Smartsheet has empowered teams to manage work seamlessly and scale solutions smarter. Now, in our most ambitious chapter yet, we are uniting human teams with AI agents. By orchestrating the work agents do best, automating manual tasks and uncovering insights at scale, we create the space for people to focus on what truly matters: judgment, creativity, and big thinking. That is magic at work, and it’s what we show up for every day.&lt;/p&gt;&lt;/div&gt;&lt;p&gt;We are looking for a skilled and motivated Principal Software Engineer who is passionate about continuous learning and eager to grow along with us in a fast-paced, innovative environment.&lt;/p&gt;
+&lt;p&gt;You will work remotely from Bulgaria and will be reporting to an engineering leader located in Bulgaria.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;You Will:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lead the design and implementation of Smartsheet's next-generation architecture, ensuring scalability, security, and performance for millions of global users.&lt;/li&gt;
+&lt;li&gt;Define and drive architecture strategy, making key technical decisions that shape the future of the platform.&lt;/li&gt;
+&lt;li&gt;Review and guide technical project designs, providing feedback during design review presentations to ensure system resilience and scalability.&lt;/li&gt;
+&lt;li&gt;Take ownership of cross-functional technical initiatives, aligning teams around common architectural goals while driving large-scale projects to completion.&lt;/li&gt;
+&lt;li&gt;Foster strong technical leadership, mentoring senior engineers and influencing best practices across multiple engineering teams.&lt;/li&gt;
+&lt;li&gt;Lead deployment reviews for high-impact projects, ensuring they meet scalability, performance, and security requirements.&lt;/li&gt;
+&lt;li&gt;Collaborate closely with product management and other business stakeholders to balance market needs with technical constraints, driving innovation while maintaining technical rigor.&lt;/li&gt;
+&lt;li&gt;Advocate for quality and operational excellence, ensuring systems are monitored, tested, and maintained to meet the highest reliability standards.&lt;/li&gt;
+&lt;li&gt;Perform other duties as assigned.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;You Have:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Proven experience in system architecture and the design of scalable, high-availability systems across multiple programming languages and frameworks (Python, Go, Java, C/C++, SQL).&lt;/li&gt;
+&lt;li&gt;Deep understanding of distributed systems, event-driven architectures, and microservices.&lt;/li&gt;
+&lt;li&gt;Strong experience in leading large-scale architectural transformations, with the ability to influence technical direction across multiple teams.&lt;/li&gt;
+&lt;li&gt;Expertise in web application development, data structures, and object-oriented design.&lt;/li&gt;
+&lt;li&gt;A track record of mentoring senior engineers, leading them through architectural challenges, and ensuring they grow into strong technical leaders.&lt;/li&gt;
+&lt;li&gt;Strong verbal and written communication skills, with the ability to convey complex technical concepts to both technical and non-technical audiences, including senior executives.&lt;/li&gt;
+&lt;li&gt;Experience with cloud architectures and infrastructure at scale, as well as database optimization for performance and scalability.&lt;/li&gt;
+&lt;li&gt;Demonstrated ability to work autonomously, driving initiatives forward while aligning with business objectives.&lt;/li&gt;
+&lt;li&gt;Familiarity with Agile/Scrum methodologies, driving engineering best practices across teams.&lt;/li&gt;
+&lt;li&gt;Legally eligible to work in Bulgaria on an ongoing basis.&lt;/li&gt;
+&lt;li&gt;Fluency in English is required.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Smartsheet provides a competitive base salary range for roles that may be hired in different geographic areas we are licensed to operate our business from. Actual compensation is determined by several factors including, but not limited to, level of professional, educational experience, skills, and specific candidate location. In addition, this role will be eligible for a market competitive incentive opportunity.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;div class="content-conclusion"&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Get to Know Us:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;At Smartsheet, your ideas are heard, your potential is supported, and your contributions have real impact. You’ll have the freedom to explore, push boundaries, and grow beyond your role. We welcome diverse perspectives and nontraditional paths—because we know that impact comes from individuals who care deeply and challenge thoughtfully. When you’re doing work that stretches you, excites you, and connects you to something bigger, that’s magic at work. Let’s build what’s next, together.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Equal Opportunity Employer:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Smartsheet is an Equal Opportunity (EEO) employer committed to fostering an inclusive environment with the best employees. It is our policy to provide equal employment opportunities to all qualified applicants in accordance with applicable laws in the US, UK, Australia, Germany, Costa Rica, Japan, Bulgaria, India, and Singapore. All qualified applicants will receive consideration without regard to race, color, religion, sex, sexual orientation, gender identity, national origin, age, protected veteran or disabled status, or genetic information.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;If there are preparations we can make to help ensure you have a comfortable and positive interview experience, please let us know.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;span&gt;#LI-Remote&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;To apply:&lt;/strong&gt; &lt;a href="https://weworkremotely.com/remote-jobs/smartsheet-principal-software-engineer-remote-eligible-in-bulgaria"&gt;https://weworkremotely.com/remote-jobs/smartsheet-principal-software-engineer-remote-eligible-in-bulgaria&lt;/a&gt;&lt;/p&gt;
+</description>
+      <pubDate>Mon, 02 Nov 2026 07:31:15 +0000</pubDate>
+      <expires_at>Wed, 02 Dec 2026 07:31:15 +0000</expires_at>
+      <guid>https://weworkremotely.com/remote-jobs/smartsheet-principal-software-engineer-remote-eligible-in-bulgaria</guid>
+      <link>https://weworkremotely.com/remote-jobs/smartsheet-principal-software-engineer-remote-eligible-in-bulgaria</link>
+    </item>
+  </channel>
+</rss>

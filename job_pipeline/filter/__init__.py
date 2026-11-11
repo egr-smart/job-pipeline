@@ -40,6 +40,12 @@ class Filter:
         now = now or datetime.now(UTC)
         return (
             check_age(job, self.cfg.limits.max_age_days, now)
-            or check_title(job.title, self.cfg.titles.include, self.cfg.titles.exclude)
+            or check_title(
+                job.title,
+                self.cfg.titles.include,
+                # HN headers often list several roles ("Eng Manager, Backend Engineer"), so
+                # excludes would drop good posts; the scorer sorts them out instead.
+                [] if job.source == "hn" else self.cfg.titles.exclude,
+            )
             or classify_location(job, self.cfg.home_country, self.vocab)
         )

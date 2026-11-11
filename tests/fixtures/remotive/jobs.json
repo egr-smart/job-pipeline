@@ -1,0 +1,56 @@
+{
+ "00-warning": "Remotive main domain moved to remotive.com ! Please make your API calls on remotive.com/api/remote-jobs instead of remotive.io now ;) Legacy endpoint remotive.io/api/remote-jobs will be terminated in June 2022. Thank you!",
+ "0-legal-notice": "Legal warning - Hey, thanks for using Remotive's API, we appreciate it! Please note that API documentation and access is granted so that developers can share our jobs further. Please do not submit Remotive jobs to third Party websites, including but not limited to: Jooble, Neuvoo, Google Jobs, LinkedIn Jobs. Please link back to the URL found on Remotive AND mention Remotive as a source in order to Remotive to get traffic from your listing. If you don't do that, we'll terminate your API access, sorry! Jobs displayed are delayed by 24 hours, the goal being that jobs are attributed to Remotive on various platforms. Displaying our jobs in order to collect signups/email addresses to show a listing constitutes a breach of our terms of services. We offer a private, paid-for API, please email us at hello(at)remotive(dot)io for more information (starting budget is $5k/mo). Please find out terms of services on https://remotive.com/api-documentation. Please note that there is absolutely no need to request Remotive Job data too frequently. Typically, you only need to GET Remotive job data through this API a couple of times a day (we advise max. 4 times a day). Our data is not changing much faster than that anyway. Note that excessive requests will be blocked. Many thanks (Rodolphe & the Remotive team!)",
+ "job-count": 13,
+ "total-job-count": 13,
+ "jobs": [
+  {
+   "id": 2086540,
+   "url": "https://remotive.com/remote-jobs/sales/inside-sales-contractor-2086540",
+   "title": "Inside Sales Contractor",
+   "company_name": "Credit Wellness, LLC",
+   "company_logo": "https://remotive.com/job/2086540/logo",
+   "category": "Sales",
+   "tags": [
+    "CRM",
+    "google sheets",
+    "financial services",
+    "Inside Sales"
+   ],
+   "job_type": "full_time",
+   "publication_date": "2026-11-08T21:47:58",
+   "candidate_required_location": "Worldwide",
+   "salary": "OTE $25k - $35k",
+   "description": "<p dir=\"ltr\" style=\"line-height: 1.38; background-color: #ffffff; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 12pt 0pt;\"><span style=\"color: #2d2d2d; background-color: transparent; font-weight: bold; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;\">About Us</span></p>\n<p dir=\"ltr\" style=\"line-height: 1.38; background-color: #ffffff; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 12pt 0pt;\"><span style=\"color: #2d2d2d; background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text",
+   "company_logo_url": "https://remotive.com/job/2086540/logo"
+  },
+  {
+   "id": 2091045,
+   "url": "https://remotive.com/remote-jobs/information-technology/tier-iii-service-desk-engineer-2091045",
+   "title": "Tier III Service Desk Engineer",
+   "company_name": "Unio Digital",
+   "company_logo": "https://remotive.com/job/2091045/logo",
+   "category": "Information Technology",
+   "tags": [
+    "azure",
+    "cisco",
+    "security",
+    "video",
+    "documentation",
+    "hardware",
+    "helpdesk",
+    "onboarding",
+    "MSP",
+    "ticketing",
+    "Microsoft 365",
+    "IT systems"
+   ],
+   "job_type": "full_time",
+   "publication_date": "2026-11-07T01:10:55",
+   "candidate_required_location": "Worldwide",
+   "salary": "",
+   "description": "<p class=\"MsoNormal\" style=\"margin: 0in 0in 8pt; line-height: 15.6933px; color: #000000;\">Uni\u00f3 Digital is an Arizona-based managed service provider (MSP) delivering Managed IT Services, Low Voltage Cabling, Access Control, Video Surveillance, and Intrusion Services. We believe technology should be intuitive, not intimidating.</p>\n<p>\u00a0</p>\n<p class=\"MsoNormal\" style=\"margin: 0in 0in 8pt; line-height: 15.6933px; color: #000000;\">We are looking for an experienced Tier 3 Service Desk Technician with exceptional problem-solving skills. You will serve as the escalation point within the team, resolvi",
+   "company_logo_url": "https://remotive.com/job/2091045/logo"
+  }
+ ]
+}

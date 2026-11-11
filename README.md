@@ -14,7 +14,10 @@ uv run jobs watchlist resolve             # detect each company's ATS + slug
 uv run jobs collect --dry-run             # fetch + filter, no LLM; check volumes
 uv run jobs jobs --result unknown         # inspect what the filter let through, and why
 uv run jobs collect --limit 10            # score the 10 newest passing jobs with the LLM
-uv run jobs scores --dropped              # ranked results with reasoning
+uv run jobs scores --dropped              # ranked results with reasoning, in the terminal
+uv run jobs digest --preview --open       # readable HTML report (no email, jobs stay unshown)
+uv run jobs digest                        # real digest: report + email, records what was shown
+uv run jobs mark 1998 applied             # never show a job again (applied | dismissed)
 ```
 
 ## Status
@@ -22,10 +25,10 @@ uv run jobs scores --dropped              # ranked results with reasoning
 - [x] Config, SQLite store, cross-source dedupe
 - [x] Greenhouse / Lever / Ashby watchlist + `watchlist resolve`
 - [x] Hard filters (age, title, three-way location)
-- [ ] HN Who is Hiring, Remotive, We Work Remotely
+- [x] HN Who is Hiring, Remotive, We Work Remotely
 - [x] LLM scoring via Claude Code CLI (`backend: cli`) + `jobs scores`
 - [ ] OpenAI-compatible backend (OpenRouter, Ollama, …)
 - [x] Ranking
-- [ ] Digest, email
-- [ ] `jobs eval`, `jobs mark`
+- [x] Digest (markdown + HTML report), email notifier, `jobs mark`
+- [ ] `jobs eval`
 - [ ] Nix flake + NixOS module

@@ -10,6 +10,7 @@ from .http import Http
 from .llm import LLMError, make_backend
 from .llm.scoring import job_message, prompt_hash, score_job, system_prompt
 from .sources import SourceResult
+from .sources.boards import fetch_hn, fetch_remotive, fetch_wwr
 from .sources.watchlist import fetch_watchlist, load_watchlist
 from .store import Store, now_iso
 
@@ -53,7 +54,13 @@ def fetch_all(cfg: Config, http: Http) -> list[SourceResult]:
     results: list[SourceResult] = []
     if cfg.sources.watchlist:
         results += fetch_watchlist(http, load_watchlist(cfg.path(cfg.sources.watchlist)))
-    # TODO: HN Who is Hiring, Remotive, We Work Remotely
+    src = cfg.sources
+    if src.hn_who_is_hiring.enabled:
+        results.append(fetch_hn(http, src.hn_who_is_hiring.threads))
+    if src.remotive.enabled:
+        results.append(fetch_remotive(http))
+    if src.weworkremotely.enabled:
+        results += fetch_wwr(http, src.weworkremotely.categories)
     return results
 
 

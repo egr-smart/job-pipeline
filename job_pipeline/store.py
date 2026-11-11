@@ -78,7 +78,7 @@ MIGRATIONS = [
 ]
 
 # Preferred link order when a job is listed in several places: the company's own ATS first.
-SOURCE_PRIORITY = {"greenhouse": 0, "lever": 0, "ashby": 0, "hn": 1}
+SOURCE_PRIORITY = {"greenhouse": 0, "lever": 0, "ashby": 0, "hn": 1, "weworkremotely": 2, "remotive": 2}
 
 _COMPANY_SUFFIXES = re.compile(r"\b(inc|llc|ltd|limited|pty|gmbh|corp|corporation|co|company)\b")
 _TITLE_NOISE = re.compile(r"\((?:[^)]*remote[^)]*)\)|\bremote\b")
@@ -140,6 +140,15 @@ class Store:
                     (seen_at, job.url, job.source, job.source_id),
                 )
                 self._refresh_job(job_id, job, seen_at)
+                # A single-listing job mirrors its source, so take fresh location fields (they can
+                # change upstream, or a parser fix can improve them). Merged jobs keep the richest.
+                self.db.execute(
+                    """
+                    UPDATE jobs SET location_raw = ?, workplace = ?
+                    WHERE id = ? AND (SELECT count(*) FROM listings WHERE job_id = ?) = 1
+                    """,
+                    (job.location_raw, job.workplace, job_id, job_id),
+                )
                 return job_id, False
 
             fp = fingerprint(job.company, job.title)
@@ -252,8 +261,10 @@ class Store:
         """Scores for the current profile+model, with the job's display fields."""
         return self.db.execute(
             """
-            SELECT j.id, j.company, j.title, j.location_raw, j.posted_at, j.salary_raw, s.result_json,
-                   (SELECT mark FROM marks m WHERE m.job_id = j.id) AS mark
+            SELECT j.id, j.company, j.title, j.location_raw, j.posted_at, j.first_seen, j.last_seen,
+                   j.salary_raw, s.result_json,
+                   (SELECT mark FROM marks m WHERE m.job_id = j.id) AS mark,
+                   EXISTS (SELECT 1 FROM shortlist_appearances a WHERE a.job_id = j.id) AS shown
             FROM scores s JOIN jobs j ON j.id = s.job_id
             WHERE s.profile_hash = ? AND s.scorer_id = ?
               AND j.filter_result IN ('allow', 'unknown')  -- a later filter fix can deny a scored job
@@ -261,7 +272,19 @@ class Store:
             (profile_hash, scorer_id),
         ).fetchall()
 
+    def record_appearances(self, job_ids: list[tuple[int, str]], digest_at: str) -> None:
+        with self.db:
+            self.db.executemany(
+                "INSERT INTO shortlist_appearances VALUES (?, ?, ?)",
+                [(job_id, digest_at, list_name) for job_id, list_name in job_ids],
+            )
+
     # --- runs -------------------------------------------------------------------------
+
+    def last_run(self, kind: str) -> sqlite3.Row | None:
+        return self.db.execute(
+            "SELECT * FROM runs WHERE kind = ? ORDER BY id DESC LIMIT 1", (kind,)
+        ).fetchone()
 
     def record_run(self, kind: str, started_at: str, stats: dict) -> int:
         with self.db:

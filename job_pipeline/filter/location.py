@@ -74,9 +74,13 @@ def classify_location(job: RawJob, home: str, vocab: Vocab) -> Outcome:
             return Outcome("deny", f"not remote: {hit}")
 
     named = _places(vocab, loc)
-    if not named and remote:
-        # "Remote" with the region in the title instead, e.g. "SRE, Infrastructure — UK".
-        named = _places(vocab, title)
+    in_title = _places(vocab, title) if remote else []
+    if in_title and not any("*" in c or home in c for _, c in in_title):
+        # The title is more specific than the location field: "Remote" or even "Anywhere in
+        # the World" with a title like "SRE — UK" or "Engineer (Remote Eligible in Bulgaria)".
+        return Outcome("deny", f"title restricts region, excludes {home}: {', '.join(p for p, _ in in_title[:3])}")
+    if not named:
+        named = in_title
 
     if named:
         covered = [p for p, covers in named if "*" in covers or home in covers]

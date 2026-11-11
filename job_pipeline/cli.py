@@ -1,16 +1,20 @@
+import subprocess
+import sys
 from pathlib import Path
 from typing import Annotated
 
 import typer
 
-from .config import ConfigError, load_config
+from .config import ConfigError, EmailNotifier, FileNotifier, load_config
+from .digest import build_digest
 from .http import Http
 from .llm import make_backend
-from .llm.scoring import ScoreResult, prompt_hash, system_prompt
+from .llm.scoring import prompt_hash, system_prompt
+from .notifiers import NotifyError, send_email, write_report
 from .pipeline import collect as run_collect
-from .rank import drop_reason, rank_score
+from .rank import build_sections
 from .sources.watchlist import load_watchlist, resolve_company, save_watchlist
-from .store import Store
+from .store import Store, now_iso
 
 app = typer.Typer(no_args_is_help=True, help="Automated remote job search.")
 watchlist_app = typer.Typer(no_args_is_help=True, help="Manage the company watchlist.")
@@ -66,48 +70,106 @@ def collect(
         typer.secho(f"Scoring stopped: {stats.scoring_aborted}", fg="yellow")
 
 
+def _scoring_ids(cfg) -> tuple[str, str]:
+    """(profile_hash, scorer_id) for the configured profile, prompt and model."""
+    if cfg.llm is None:
+        typer.secho("No llm configured.", fg="red", err=True)
+        raise typer.Exit(2)
+    backend = make_backend(cfg.llm.scoring)
+    return prompt_hash(system_prompt(cfg.read_profile(), cfg.home_country)), backend.id
+
+
 @app.command()
 def scores(
     config: ConfigOpt = None,
     show_dropped: Annotated[bool, typer.Option("--dropped", help="Also list jobs dropped by ranking.")] = False,
 ):
-    """Show scored jobs for the current profile and model, ranked as the digest would."""
+    """Show every scored job for the current profile and model, ranked, in the terminal."""
     cfg = _load(config)
-    if cfg.llm is None:
-        typer.secho("No llm configured.", fg="red", err=True)
-        raise typer.Exit(2)
     store = Store(cfg.db_path)
-    backend = make_backend(cfg.llm.scoring)
-    phash = prompt_hash(system_prompt(cfg.read_profile(), cfg.home_country))
-
-    sections: dict[str, list] = {"Top matches": [], "Worth asking (location unclear)": [], "Dropped": []}
-    for row in store.scored_jobs(phash, backend.id):
-        if row["mark"]:
-            continue
-        result = ScoreResult.model_validate_json(row["result_json"])
-        dropped = drop_reason(result)
-        key = "Dropped" if dropped else (
-            "Top matches" if result.location_eligible == "yes" else "Worth asking (location unclear)"
-        )
-        sections[key].append((rank_score(result, cfg.ranking), row, result, dropped))
-
-    for title, items in sections.items():
+    sections = build_sections(cfg, store, *_scoring_ids(cfg), unshown_only=False)
+    named = {
+        "Top matches": sections.top,
+        "Worth asking (location unclear)": sections.unclear,
+        "Dropped": sections.dropped,
+    }
+    for title, items in named.items():
         if title == "Dropped" and not show_dropped:
             typer.echo(f"\n({len(items)} dropped; show with --dropped)")
             continue
         typer.secho(f"\n## {title} ({len(items)})", bold=True)
-        for score, row, r, dropped in sorted(items, key=lambda i: -i[0]):
-            typer.secho(f"\n#{row['id']} {row['company']} — {row['title']}   [score {score}]", bold=True)
-            typer.echo(f"   Location: {row['location_raw']!r} → {r.location_eligible}: {r.location_note}")
-            if r.salary_text or row["salary_raw"]:
-                typer.echo(f"   Salary: {r.salary_text or row['salary_raw']}")
+        for item in items:
+            j, r = item.job, item.result
+            shown = "  (already in a digest)" if j["shown"] else ""
+            typer.secho(f"\n#{j['id']} {j['company']} — {j['title']}   [score {item.score}]{shown}", bold=True)
+            typer.echo(f"   {item.links[0][1]}")
+            typer.echo(f"   Location: {j['location_raw']!r} → {r.location_eligible}: {r.location_note}")
+            if r.salary_text or j["salary_raw"]:
+                typer.echo(f"   Salary: {r.salary_text or j['salary_raw']}")
             typer.echo(f"   Why: {r.summary}")
             if r.gaps:
                 typer.echo(f"   Gaps: {'; '.join(r.gaps)}")
             if r.red_flags:
                 typer.echo(f"   Flags: {'; '.join(r.red_flags)}")
             line = f"   role {r.role_fit} · stack {r.stack_fit} · seniority {r.seniority}"
-            typer.echo(line + (f"   DROPPED: {dropped}" if dropped else ""))
+            typer.echo(line + (f"   DROPPED: {item.dropped}" if item.dropped else ""))
+
+
+@app.command()
+def digest(
+    config: ConfigOpt = None,
+    preview: Annotated[
+        bool, typer.Option("--preview", help="Write the report only: no email, and jobs stay unshown.")
+    ] = False,
+    include_dropped: Annotated[bool, typer.Option("--dropped", help="Append dropped jobs to the report.")] = False,
+    open_report: Annotated[bool, typer.Option("--open", help="Open the HTML report afterwards.")] = False,
+):
+    """Build the shortlist from unshown jobs and send it to the configured notifiers."""
+    cfg = _load(config)
+    store = Store(cfg.db_path)
+    sections = build_sections(cfg, store, *_scoring_ids(cfg), unshown_only=True)
+    last_run = store.last_run("collect") or store.last_run("collect-dry-run")
+    d = build_digest(cfg, sections, last_run, include_dropped=include_dropped)
+
+    file_notifiers = [n for n in cfg.notifiers if isinstance(n, FileNotifier)] or [FileNotifier(type="file")]
+    report = write_report(cfg, file_notifiers[0], d, suffix="-preview" if preview else "")
+    typer.echo(d.subject)
+    typer.echo(f"Report: {report}")
+    if open_report:
+        subprocess.run(["open" if sys.platform == "darwin" else "xdg-open", str(report)], check=False)
+    if preview:
+        return
+
+    for n in cfg.notifiers:
+        if isinstance(n, EmailNotifier):
+            try:
+                send_email(n, d)
+                typer.echo(f"Emailed {n.to}")
+            except NotifyError as e:
+                typer.secho(f"Email failed: {e}", fg="red", err=True)
+    # Recorded even if email failed: the report file has them, and a retry shouldn't spam.
+    store.record_appearances(d.shortlisted, now_iso())
+
+
+@app.command()
+def mark(
+    job_id: int,
+    status: Annotated[str, typer.Argument(help="applied | dismissed")],
+    reason: Annotated[str | None, typer.Option(help="Optional note, e.g. 'actually US-only'.")] = None,
+    config: ConfigOpt = None,
+):
+    """Mark a job so it never appears in a digest again."""
+    if status not in ("applied", "dismissed"):
+        typer.secho("status must be 'applied' or 'dismissed'", fg="red", err=True)
+        raise typer.Exit(2)
+    store = Store(_load(config).db_path)
+    row = store.db.execute("SELECT company, title FROM jobs WHERE id = ?", (job_id,)).fetchone()
+    if row is None:
+        typer.secho(f"No job #{job_id}", fg="red", err=True)
+        raise typer.Exit(1)
+    with store.db:
+        store.db.execute("INSERT OR REPLACE INTO marks VALUES (?, ?, ?, ?)", (job_id, status, reason, now_iso()))
+    typer.echo(f"#{job_id} {row['company']} — {row['title']}: {status}")
 
 
 @app.command()

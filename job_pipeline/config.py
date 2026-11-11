@@ -35,11 +35,17 @@ class CategorySource(ToggleSource):
     categories: list[str] = []
 
 
+class HNSource(ToggleSource):
+    threads: int = 2  # newest monthly threads to read; max_age_days drops older comments
+
+
 class Sources(_Strict):
     watchlist: str | None = "watchlist.yaml"
-    hn_who_is_hiring: ToggleSource = ToggleSource()
-    remotive: CategorySource = CategorySource()
-    weworkremotely: CategorySource = CategorySource()
+    hn_who_is_hiring: HNSource = HNSource()
+    remotive: ToggleSource = ToggleSource()
+    weworkremotely: CategorySource = CategorySource(
+        categories=["back-end-programming", "full-stack-programming", "devops-sysadmin"]
+    )
 
 
 class OpenAICompatibleConfig(_Strict):
@@ -104,6 +110,7 @@ class Ranking(_Strict):
     unclear_list_size: int = 3
     weights: Weights = Weights()
     red_flag_penalty: float = 1.0
+    min_score: float = 4.0  # ranked below this -> dropped, so weak fits never pad the shortlist
     resurface: bool = False
 
 

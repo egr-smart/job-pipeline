@@ -26,9 +26,11 @@ limits:
 
 sources:
   watchlist: watchlist.yaml
-  hn_who_is_hiring: { enabled: true }
-  remotive: { enabled: true, categories: [devops, software-dev] }
-  weworkremotely: { enabled: true, categories: [devops-sysadmin, back-end-programming] }
+  hn_who_is_hiring: { enabled: true, threads: 2 }   # newest monthly "Who is hiring?" threads
+  remotive: { enabled: true }                       # public feed is a small sample
+  weworkremotely:
+    enabled: true
+    categories: [back-end-programming, full-stack-programming, devops-sysadmin]
 
 llm:
   # Option A: Claude Code headless, on your Claude subscription (must be logged in to
@@ -51,6 +53,7 @@ ranking:
   weights: { role_fit: 0.5, stack_fit: 0.3, seniority: 0.2 }
   seniority_scores: { match: 10, over: 6, stretch: 3 }   # "under" is always dropped
   red_flag_penalty: 1.0
+  min_score: 4.0            # jobs ranked below this are dropped rather than padding the shortlist
   resurface: false
 
 notifiers:

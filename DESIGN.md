@@ -121,9 +121,9 @@ Every source implements `fetch() -> list[RawJob]`. A failing source never fails 
 | Greenhouse | `boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true` | Watchlist |
 | Lever | `api.lever.co/v0/postings/{slug}` | Watchlist |
 | Ashby | `api.ashbyhq.com/posting-api/job-board/{slug}` | Watchlist; often structured salary |
-| HN Who is Hiring | Algolia HN API | Current month's thread (plus previous month on first run). Free text: each comment goes through LLM **extraction** to produce 0..N `RawJob`s. Cached by comment ID so extraction runs once. |
-| Remotive | Public JSON API | Category filtered |
-| We Work Remotely | Category RSS | |
+| HN Who is Hiring | Algolia HN API | Newest `threads` monthly threads (default 2; `max_age_days` drops older comments). One job per top-level comment: the conventional pipe-separated header line is the location, the part after the company is the title. No LLM extraction pass (it would cost a call per comment); the scorer reads the full comment, including multi-role posts. Title excludes aren't applied to HN, since headers often list several roles. |
+| Remotive | Public JSON API | As of Nov 2026 the public feed is a ~15-job sample and ignores category filters. Terms: link back and credit Remotive. |
+| We Work Remotely | Category RSS | The `country` field (an allow-list) wins over `region` ("Anywhere in the World") when present. |
 
 **v1.1:** RemoteOK, Working Nomads. **Skipped:** Wellfound, YC Work at a Startup.
 
@@ -151,7 +151,7 @@ Applied in order: **age → title → location**.
 3. **Location** (three-way):
    - **allow:** remote, and the location names a region containing `home_country` (data/regions.yaml maps region aliases, e.g. APAC, Asia-Pacific, ANZ, Oceania, Australia, Worldwide, Anywhere, to countries), or contractor/EOR language with no region restriction.
    - **deny:** on-site, hybrid, an explicit region that excludes `home_country` (US-only, EMEA, "must reside in…"), or a citizenship or security-clearance requirement.
-   - Places are matched in the location string; if a remote role's location names none, the title is checked too ("SRE, Infrastructure — UK").
+   - Places are matched in the location string. For remote roles the title is checked too: if it names only places excluding the home country ("SRE — UK", "Remote Eligible in Bulgaria") it's denied even when the location says worldwide.
    - A location naming the home country but not saying "remote" (some boards list bare countries) is **unknown**, so the LLM judges remoteness.
    - **unknown:** "Remote" with no region. A keyword pass on the description looks for home-country-excluding tells (for a non-US user: 401(k), "authorized to work in the US", lists of US states, US-only benefits). A hit means **deny**. Otherwise the job passes to the LLM, which judges eligibility.
    - **Timezone-overlap requirements are never a deny reason.**
@@ -197,6 +197,7 @@ Prompts live in `llm/prompts/{extract,score}.md`.
 1. Drop `location_eligible == no` and `seniority == under`.
 2. `score = w.role_fit*role_fit + w.stack_fit*stack_fit + w.seniority*seniority_bonus − red_flag_penalty*len(red_flags)`.
    `seniority_bonus` from `ranking.seniority_scores`: match = 10, over = 6, stretch = 3 (tunable). Stretch roles stay in the shortlist but rank below comparable matches.
+   Jobs scoring below `ranking.min_score` (default 4.0) are dropped, so weak fits never pad a short list.
 3. `location_eligible == yes` → **Top matches** (top `shortlist_size`).
    `location_eligible == unclear` → **Worth asking** (top `unclear_list_size`).
 
