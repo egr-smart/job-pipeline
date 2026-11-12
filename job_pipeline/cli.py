@@ -257,6 +257,35 @@ def eval_add(
                + (f", location {label.location}" if label.location else ""))
 
 
+@eval_app.command("label")
+def eval_label(
+    config: ConfigOpt = None,
+    port: Annotated[int, typer.Option(help="Local port to serve on.")] = 8765,
+    no_open: Annotated[bool, typer.Option("--no-open", help="Don't open a browser.")] = False,
+):
+    """Label jobs in your browser: a local page listing every job that passed the filters."""
+    import webbrowser
+
+    from .label_server import serve
+
+    cfg = _load(config)
+    try:
+        server = serve(Store(cfg.db_path), EvalSet(cfg.state_path(cfg.evals_dir)), port)
+    except OSError as e:
+        typer.secho(f"Can't listen on 127.0.0.1:{port} ({e}); try --port", fg="red", err=True)
+        raise typer.Exit(1)
+    url = f"http://127.0.0.1:{port}/"
+    typer.echo(f"Labelling at {url}  (Ctrl-C to stop; labels save as you click)")
+    if not no_open:
+        webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        typer.echo("\nStopped.")
+    finally:
+        server.server_close()
+
+
 @eval_app.command("list")
 def eval_list(config: ConfigOpt = None):
     """Show the labelled jobs."""

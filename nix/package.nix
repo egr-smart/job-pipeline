@@ -43,5 +43,6 @@ python3Packages.buildPythonApplication {
   meta = {
     description = "Automated remote job search: fetch, filter, LLM-score, email a shortlist";
     mainProgram = "jobs";
+    license = lib.licenses.mit;
   };
 }

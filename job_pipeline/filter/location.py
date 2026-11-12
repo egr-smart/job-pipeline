@@ -13,8 +13,8 @@ from ..text import contains_phrase, normalize_words
 _TIMEZONE_RE = re.compile(
     r"\b(?:[a-z.]+ ){0,2}time ?zones?\b|\b(?:utc|gmt) ?[+-]? ?\d*(?::\d\d)?\b|\boverlap\b[^;()]*"
 )
-# "Anywhere in the US" is a US restriction, not "anywhere".
-_ANYWHERE_IN_RE = re.compile(r"\banywhere in (?:the )?")
+# "Anywhere in the US" is a US restriction, not "anywhere" (but "anywhere in the world" is).
+_ANYWHERE_IN_RE = re.compile(r"\banywhere in (?!(?:the )?world\b)(?:the )?")
 
 
 @dataclass

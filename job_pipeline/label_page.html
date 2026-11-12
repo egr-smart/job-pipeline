@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Label jobs</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --text: #1f2328; --muted: #656d76; --line: #d8dee4;
+    --accent: #0969da; --strong: #1a7f37; --maybe: #9a6700; --no: #cf222e;
+    --strong-bg: #dafbe1; --maybe-bg: #fff8c5; --no-bg: #ffebe9;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8d96a0; --line: #30363d;
+      --accent: #4493f8; --strong: #3fb950; --maybe: #d29922; --no: #f85149;
+      --strong-bg: #12261e; --maybe-bg: #272115; --no-bg: #2d1517;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 1; background: var(--card); border-bottom: 1px solid var(--line);
+           padding: 12px 16px; }
+  .bar { max-width: 900px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+  h1 { font-size: 17px; margin: 0; }
+  .counts { color: var(--muted); font-size: 14px; }
+  .counts b.strong { color: var(--strong); } .counts b.maybe { color: var(--maybe); } .counts b.no { color: var(--no); }
+  .filters { margin-left: auto; display: flex; gap: 4px; }
+  .filters button { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--line);
+                    background: var(--card); color: var(--text); border-radius: 6px; cursor: pointer; }
+  .filters button.on { border-color: var(--accent); color: var(--accent); }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .card.focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .card.l-strong { border-left: 4px solid var(--strong); }
+  .card.l-maybe { border-left: 4px solid var(--maybe); }
+  .card.l-no { border-left: 4px solid var(--no); }
+  .title { font-size: 16px; font-weight: 600; margin: 0; }
+  .title a { color: var(--accent); text-decoration: none; }
+  .title a:hover { text-decoration: underline; }
+  .company { color: var(--muted); font-weight: 400; }
+  .meta { color: var(--muted); font-size: 13px; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .meta .loc { color: var(--text); }
+  details { margin: 10px 0 0; }
+  summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+  .desc { white-space: pre-wrap; font-size: 14px; margin: 8px 0 0; max-height: 60vh; overflow: auto;
+          border-top: 1px solid var(--line); padding-top: 8px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  .v { font: inherit; font-size: 14px; padding: 5px 14px; border-radius: 6px; cursor: pointer;
+       border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  .v.strong.sel { background: var(--strong-bg); border-color: var(--strong); color: var(--strong); font-weight: 600; }
+  .v.maybe.sel { background: var(--maybe-bg); border-color: var(--maybe); color: var(--maybe); font-weight: 600; }
+  .v.no.sel { background: var(--no-bg); border-color: var(--no); color: var(--no); font-weight: 600; }
+  select, input[type=text] { font: inherit; font-size: 14px; padding: 5px 8px; border-radius: 6px;
+                             border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  input[type=text] { flex: 1 1 220px; min-width: 0; }
+  .clear { font: inherit; font-size: 13px; background: none; border: none; color: var(--muted); cursor: pointer; text-decoration: underline; }
+  .status { font-size: 13px; color: var(--muted); min-width: 4em; }
+  .status.err { color: var(--no); }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Label jobs</h1>
+    <span class="counts" id="counts"></span>
+    <div class="filters" id="filters">
+      <button data-f="unlabelled" class="on">Unlabelled</button>
+      <button data-f="labelled">Labelled</button>
+      <button data-f="all">All</button>
+    </div>
+  </div>
+</header>
+<main>
+  <p class="hint">Would you want this job in your digest? Strong = near the top; maybe = fine to see;
+    no = shouldn't reach you. Set location only when the listing makes it clear.
+    Keys: <b>j/k</b> next/previous, <b>1/2/3</b> strong/maybe/no, <b>o</b> open listing, <b>d</b> description.</p>
+  <div id="list"></div>
+</main>
+<script>
+let jobs = [];
+let filter = "unlabelled";
+let focused = null;
+
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const k of kids) if (k != null) e.append(k);
+  return e;
+};
+
+function visible() {
+  return jobs.filter(j => filter === "all" || (filter === "labelled") === !!j.label);
+}
+
+function renderCounts() {
+  const c = { strong: 0, maybe: 0, no: 0 };
+  jobs.forEach(j => j.label && c[j.label.verdict]++);
+  const total = c.strong + c.maybe + c.no;
+  const counts = document.getElementById("counts");
+  counts.replaceChildren(
+    `${total} labelled of ${jobs.length}: `,
+    el("b", { class: "strong" }, `${c.strong} strong`), ", ",
+    el("b", { class: "maybe" }, `${c.maybe} maybe`), ", ",
+    el("b", { class: "no" }, `${c.no} no`));
+}
+
+async function post(path, body) {
+  const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+function card(j) {
+  const status = el("span", { class: "status" });
+  const loc = el("select", { title: "Can you be hired to work from your country?" },
+    el("option", { value: "" }, "location: not set"),
+    el("option", { value: "yes" }, "location: yes"),
+    el("option", { value: "no" }, "location: no"),
+    el("option", { value: "unclear" }, "location: unclear"));
+  const note = el("input", { type: "text", placeholder: "note (why?)" });
+  if (j.label) { loc.value = j.label.location || ""; note.value = j.label.note || ""; }
+
+  const save = async verdict => {
+    status.className = "status"; status.textContent = "saving…";
+    try {
+      j.label = await post("/api/label", { id: j.id, verdict, location: loc.value, note: note.value });
+      status.textContent = "saved";
+      paint(c); renderCounts();
+    } catch (e) { status.className = "status err"; status.textContent = e.message; }
+  };
+  // Changing location or note on an already-labelled job saves it again.
+  const resave = () => j.label && save(j.label.verdict);
+  loc.addEventListener("change", resave);
+  note.addEventListener("change", resave);
+
+  const buttons = ["strong", "maybe", "no"].map(v => el("button", { class: `v ${v}`, onclick: () => save(v) }, v));
+  const clear = el("button", { class: "clear", onclick: async () => {
+    try { await post("/api/unlabel", { id: j.id }); j.label = null; status.textContent = "cleared"; paint(c); renderCounts(); }
+    catch (e) { status.className = "status err"; status.textContent = e.message; }
+  } }, "clear");
+
+  const [main, ...others] = j.links;
+  const desc = el("details", {}, el("summary", {}, "Description"), el("div", { class: "desc" }, j.description || "(no description)"));
+  const c = el("div", { class: "card", "data-id": j.id },
+    el("p", { class: "title" },
+      el("a", { href: main.url, target: "_blank", rel: "noopener" }, j.title),
+      el("span", { class: "company" }, ` — ${j.company}`)),
+    el("div", { class: "meta" },
+      el("span", { class: "loc" }, `📍 ${j.location || "not stated"}${j.workplace ? ` (${j.workplace})` : ""}`),
+      j.salary ? el("span", {}, `💰 ${j.salary}`) : null,
+      j.posted ? el("span", {}, `posted ${j.posted}`) : null,
+      el("span", {}, `filter ${j.filter}`),
+      el("span", {}, `#${j.id} · ${main.source}`),
+      ...others.map(o => el("a", { href: o.url, target: "_blank", rel: "noopener" }, `also on ${o.source}`))),
+    desc,
+    el("div", { class: "controls" }, ...buttons, loc, note, clear, status));
+  c._job = j; c._save = save; c._desc = desc; c._link = main.url;
+  c.addEventListener("click", () => setFocus(c));
+  paint(c);
+  return c;
+}
+
+function paint(c) {
+  const v = c._job.label && c._job.label.verdict;
+  c.classList.remove("l-strong", "l-maybe", "l-no");
+  if (v) c.classList.add(`l-${v}`);
+  c.querySelectorAll(".v").forEach(b => b.classList.toggle("sel", b.classList.contains(v)));
+}
+
+function render() {
+  const list = document.getElementById("list");
+  const items = visible();
+  list.replaceChildren(...(items.length ? items.map(card) : [el("p", { class: "empty" }, "Nothing here.")]));
+  focused = null;
+  renderCounts();
+}
+
+function setFocus(c) {
+  if (focused) focused.classList.remove("focus");
+  focused = c;
+  if (c) { c.classList.add("focus"); c.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+}
+
+document.getElementById("filters").addEventListener("click", e => {
+  const f = e.target.dataset.f;
+  if (!f) return;
+  filter = f;
+  document.querySelectorAll("#filters button").forEach(b => b.classList.toggle("on", b.dataset.f === f));
+  render();
+});
+
+document.addEventListener("keydown", e => {
+  if (["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+  const cards = [...document.querySelectorAll(".card")];
+  const i = focused ? cards.indexOf(focused) : -1;
+  if (e.key === "j") setFocus(cards[Math.min(i + 1, cards.length - 1)]);
+  else if (e.key === "k") setFocus(cards[Math.max(i - 1, 0)]);
+  else if (!focused) return;
+  else if (e.key === "1") focused._save("strong");
+  else if (e.key === "2") focused._save("maybe");
+  else if (e.key === "3") focused._save("no");
+  else if (e.key === "o") window.open(focused._link, "_blank", "noopener");
+  else if (e.key === "d") focused._desc.open = !focused._desc.open;
+});
+
+fetch("/api/jobs").then(r => r.json()).then(data => { jobs = data; render(); });
+</script>
+</body>
+</html>

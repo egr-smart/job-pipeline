@@ -78,6 +78,10 @@ class EvalSet:
         self.save_labels([l for l in self.labels() if l.id != job_id] + [label])
         return label
 
+    def remove(self, job_id: int) -> None:
+        self.save_labels([l for l in self.labels() if l.id != job_id])
+        self.snapshot_path(job_id).unlink(missing_ok=True)
+
     def snapshot(self, job_id: int) -> Snapshot:
         return Snapshot.model_validate_json(self.snapshot_path(job_id).read_text())
 

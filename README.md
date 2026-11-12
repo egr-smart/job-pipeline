@@ -6,6 +6,16 @@ See [DESIGN.md](DESIGN.md) for how it works.
 
 ## Quick start
 
+Keep your personal files (config, profile, watchlist, labels) outside this repo, e.g. in a
+private repo of your own, and point the CLI at them with `JOBS_CONFIG`; the database,
+reports, evals and `.env` then live next to that config:
+
+```sh
+export JOBS_CONFIG=~/projects/job-pipeline-me/config.yaml
+```
+
+Or keep them here: they're gitignored.
+
 ```sh
 cp config.example.yaml config.yaml        # set home_country, titles, LLM, email
 cp watchlist.example.yaml watchlist.yaml  # companies to poll directly
@@ -22,7 +32,15 @@ uv run jobs mark 1998 applied             # never show a job again (applied | di
 
 ### Checking the scorer: `jobs eval`
 
-Label 20–30 real jobs, then compare any model's judgement with yours:
+Label 20–30 real jobs, then compare any model's judgement with yours. The easiest way is the
+local labelling page: every job that passed the filters, with its listing link, location and full
+description, plus strong/maybe/no buttons that save as you click (keys: j/k, 1/2/3, o, d):
+
+```sh
+uv run jobs eval label                                 # opens http://127.0.0.1:8765
+```
+
+Or from the terminal:
 
 ```sh
 uv run jobs eval add 1998 strong --location yes --note "evals/feedback-loop work"
@@ -120,3 +138,7 @@ Flake users: `inputs.job-pipeline.url = "github:<you>/job-pipeline";`, then
 - [x] Digest (markdown + HTML report), email notifier, `jobs mark`
 - [x] `jobs eval` golden set
 - [x] Nix package + NixOS module (works with or without flakes)
+
+## License
+
+MIT, see [LICENSE](LICENSE).

@@ -20,6 +20,7 @@ VOCAB = Vocab.load(home_country="AU")
         ("Australia (Remote)", None, "", "", "allow"),
         ("Remote; ANZ", None, "", "", "allow"),
         ("Home based - Worldwide", None, "", "", "allow"),
+        ("Anywhere in the World", "remote", "", "", "allow"),
         ("Remote - US; Remote - Australia", None, "", "", "allow"),
         ("Singapore; Australia", None, "Senior SRE (APJ-Remote)", "", "allow"),
         ("Sydney", "remote", "", "", "allow"),

@@ -3,6 +3,7 @@ name = "job-pipeline"
 version = "0.1.0"
 description = "Automated remote job search: fetch, filter, LLM-score, email a shortlist."
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.12",
