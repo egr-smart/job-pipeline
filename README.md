@@ -37,6 +37,77 @@ A model's verdict is `no` if the digest would drop the job, `strong` if it ranks
 profile, so re-runs are free until you change `profile.md` or the prompt. `evals/` is
 gitignored: the labels are personal.
 
+## Secrets
+
+API keys and SMTP credentials are read from environment variables named in `config.yaml`
+(`api_key_env`, `username_env`, `password_env`). Locally, put them in a `.env` file next to
+`config.yaml` (gitignored); variables already set in your shell take precedence:
+
+```sh
+OPENROUTER_API_KEY=sk-or-...
+SMTP_USER=you@gmail.com
+SMTP_PASSWORD=your-gmail-app-password
+```
+
+## Deploying on NixOS (no flakes needed)
+
+1. Clone the repo anywhere (it's read at build time and copied into the Nix store), and put
+   your instance files in your NixOS config directory:
+
+   ```sh
+   git clone https://github.com/<you>/job-pipeline ~/job-pipeline
+   sudo mkdir /etc/nixos/job-pipeline   # config.yaml, profile.md, watchlist.yaml go here
+   ```
+
+   In that `config.yaml`, use `backend: openai_compatible` (the Claude CLI isn't logged in on
+   the server).
+
+2. Create the secrets file, readable by root only, kept out of the Nix store:
+
+   ```sh
+   sudo install -m 600 /dev/null /etc/job-pipeline.env
+   sudoedit /etc/job-pipeline.env       # OPENROUTER_API_KEY=..., SMTP_USER=..., SMTP_PASSWORD=...
+   ```
+
+3. Add to `configuration.nix`:
+
+   ```nix
+   imports = [ /home/<you>/job-pipeline/nix/module.nix ];
+
+   services.job-pipeline = {
+     enable = true;
+     configDir = ./job-pipeline;                    # a path literal: copied into the store
+     environmentFile = "/etc/job-pipeline.env";     # a string: never copied into the store
+     collect.schedule = "daily";                    # systemd OnCalendar syntax
+     digest.schedule = "Mon 08:00";
+   };
+   ```
+
+4. Build, try, then commit. This is safe over SSH: `test` activates without a boot entry,
+   so a reboot or `nixos-rebuild switch --rollback` gets you back.
+
+   ```sh
+   sudo nixos-rebuild build                       # evaluates and builds (runs the test suite)
+   sudo nixos-rebuild test                        # activate now, not on next boot
+   sudo job-pipeline collect --dry-run            # runs as the service user with its secrets
+   sudo nixos-rebuild switch
+   ```
+
+5. Operate it:
+
+   ```sh
+   systemctl list-timers 'job-pipeline-*'
+   sudo systemctl start job-pipeline-collect      # run now
+   journalctl -u job-pipeline-collect -e          # logs
+   sudo job-pipeline scores                       # any CLI command, as the service user
+   ```
+
+   State (database, reports, evals) lives in `/var/lib/job-pipeline`. To update, `git pull`
+   in the clone and rebuild.
+
+Flake users: `inputs.job-pipeline.url = "github:<you>/job-pipeline";`, then
+`imports = [ inputs.job-pipeline.nixosModules.default ];` with the same options.
+
 ## Status
 
 - [x] Config, SQLite store, cross-source dedupe
@@ -48,4 +119,4 @@ gitignored: the labels are personal.
 - [x] Ranking
 - [x] Digest (markdown + HTML report), email notifier, `jobs mark`
 - [x] `jobs eval` golden set
-- [ ] Nix flake + NixOS module
+- [x] Nix package + NixOS module (works with or without flakes)

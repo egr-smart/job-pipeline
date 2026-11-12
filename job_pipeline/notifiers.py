@@ -15,7 +15,7 @@ class NotifyError(Exception):
 
 
 def write_report(cfg: Config, n: FileNotifier, digest: Digest, *, suffix: str = "") -> Path:
-    out_dir = cfg.path(n.dir)
+    out_dir = cfg.state_path(n.dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = datetime.now(UTC).strftime("%Y-%m-%d") + suffix
     (out_dir / f"{stem}.md").write_text(digest.markdown)

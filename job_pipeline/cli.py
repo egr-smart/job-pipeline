@@ -249,7 +249,7 @@ def eval_add(
         raise typer.Exit(2)
     cfg = _load(config)
     try:
-        label = EvalSet(cfg.path(cfg.evals_dir)).add(Store(cfg.db_path), job_id, verdict, location, note)
+        label = EvalSet(cfg.state_path(cfg.evals_dir)).add(Store(cfg.db_path), job_id, verdict, location, note)
     except KeyError:
         typer.secho(f"No job #{job_id}", fg="red", err=True)
         raise typer.Exit(1)
@@ -261,7 +261,7 @@ def eval_add(
 def eval_list(config: ConfigOpt = None):
     """Show the labelled jobs."""
     cfg = _load(config)
-    labels = EvalSet(cfg.path(cfg.evals_dir)).labels()
+    labels = EvalSet(cfg.state_path(cfg.evals_dir)).labels()
     for l in labels:
         loc = f" loc={l.location}" if l.location else ""
         typer.echo(f"#{l.id:<5} {l.verdict:<6}{loc:<13} {l.company} — {l.title[:70]}" + (f"  ({l.note})" if l.note else ""))
@@ -284,7 +284,7 @@ def eval_run(
     if cfg.llm is None:
         typer.secho("No llm configured.", fg="red", err=True)
         raise typer.Exit(2)
-    evals = EvalSet(cfg.path(cfg.evals_dir))
+    evals = EvalSet(cfg.state_path(cfg.evals_dir))
     if not evals.labels():
         typer.secho("No labels yet. Add some with `jobs eval add <job_id> strong|maybe|no`.", fg="yellow")
         raise typer.Exit(1)

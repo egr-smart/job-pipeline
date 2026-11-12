@@ -4,7 +4,9 @@
 
 home_country: AU              # ISO code; decides which "Remote (REGION)" listings you're eligible for
 
-state_dir: .                  # where jobs.db lives (overridden by $JOBS_STATE_DIR)
+state_dir: .                  # jobs.db, reports/ and evals/ live here (overridden by $JOBS_STATE_DIR)
+# Secrets (API keys, SMTP password) go in environment variables, or in a gitignored .env file
+# next to this config: one KEY=value per line. Never put them in this file.
 profile: profile.md
 
 location:

@@ -133,7 +133,7 @@ class EmailNotifier(_Strict):
 
 class Config(_Strict):
     home_country: str
-    state_dir: str = "."
+    state_dir: str = "."  # jobs.db, reports and evals live here; $JOBS_STATE_DIR overrides
     profile: str = "profile.md"
     evals_dir: str = "evals"
     location: LocationConfig = LocationConfig()
@@ -153,12 +153,20 @@ class Config(_Strict):
         return v.upper()
 
     def path(self, p: str) -> Path:
+        """An input path (profile, watchlist), relative to the config file's directory."""
         return (self.base_dir / p).resolve()
+
+    def state_path(self, p: str) -> Path:
+        """A path the app writes to (reports, evals), relative to the state directory.
+
+        Kept separate from inputs so the config can live somewhere read-only, like the Nix store.
+        """
+        state = os.environ.get("JOBS_STATE_DIR") or self.state_dir
+        return (self.path(state) / p).resolve()
 
     @property
     def db_path(self) -> Path:
-        state = os.environ.get("JOBS_STATE_DIR") or self.state_dir
-        return self.path(state) / "jobs.db"
+        return self.state_path("jobs.db")
 
     def read_profile(self) -> str:
         return self.path(self.profile).read_text()
@@ -172,10 +180,26 @@ def default_config_path() -> Path:
     return Path(os.environ.get("JOBS_CONFIG", "config.yaml"))
 
 
+def load_env_file(path: Path) -> None:
+    """Load KEY=VALUE lines into the environment. Variables already set win."""
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.removeprefix("export ").split("=", 1)
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+            value = value[1:-1]
+        os.environ.setdefault(key.strip(), value)
+
+
 def load_config(path: Path | None = None) -> Config:
     path = path or default_config_path()
     if not path.exists():
         raise ConfigError(f"config file not found: {path} (copy config.example.yaml to get started)")
+    # Secrets (API keys, SMTP password) can live in a gitignored .env next to the config.
+    if (env_file := path.parent / ".env").exists():
+        load_env_file(env_file)
     raw = yaml.safe_load(path.read_text()) or {}
     try:
         return Config.model_validate({**raw, "base_dir": path.parent.resolve()})
